@@ -8,4 +8,26 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MH" />
+
+    <style name="MH.EditText" />
+
+    <style name="MH.EditText.Text" parent="android:Widget.EditText">
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="MH.EditText.Telepon" parent="android:Widget.EditText">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">phone</item>
+    </style>
+
+    <style name="MH.EditText.Web" parent="android:Widget.EditText">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">textWebEditText</item>
+    </style>
+
+    <style name="MH.EditText.Email" parent="android:Widget.EditText">
+        <item name="android:maxLines">1</item>
+        <item name="android:inputType">textEmailAddress</item>
+    </style>
 </resources>
