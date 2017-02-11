@@ -20,6 +20,7 @@ import java.util.List;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context mContext;
     private List<Dummy> mDataset;
+    private HomeOnClickListener mListener;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View mView;
@@ -36,9 +37,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public MyAdapter(Context context, List<Dummy> myDataset) {
+    public MyAdapter(Context context, List<Dummy> myDataset, HomeOnClickListener listener) {
         mContext = context;
         mDataset = myDataset;
+        mListener = listener;
     }
 
     @Override
@@ -60,9 +62,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 .fit()
                 .centerInside()
                 .into(holder.ivImage);
+
+        holder.mView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.onClick(dummy);
+            }
+        });
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return mDataset.size();

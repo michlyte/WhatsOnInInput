@@ -7,24 +7,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gghouse.woi.whatsonininput.model.Dummy;
+import com.gghouse.woi.whatsonininput.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private List<Dummy> dummyList = new ArrayList<Dummy>() {{
-       add(new Dummy("Michael Halim", "This is some short description.", R.mipmap.ic_launcher)) ;
+        add(new Dummy("Michael Halim", "This is some short description.", R.mipmap.ic_launcher));
     }};
+    private HomeOnClickListener mListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mListener = this;
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -44,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyAdapter(this, dummyList);
+        mAdapter = new MyAdapter(this, dummyList, mListener);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -55,5 +60,10 @@ public class HomeActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public void onClick(Dummy dummy) {
+        Logger.log(dummy.getTitle());
     }
 }
