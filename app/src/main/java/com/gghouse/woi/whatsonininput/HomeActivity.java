@@ -12,11 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.gghouse.woi.whatsonininput.model.Dummy;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private List<Dummy> dummyList = new ArrayList<Dummy>() {{
+       add(new Dummy("Michael Halim", "This is some short description.", R.mipmap.ic_launcher)) ;
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +44,7 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MyAdapter(new String[]{
-                "Michael Halim",
-                "Kornelius"
-        });
+        mAdapter = new MyAdapter(this, dummyList);
         mRecyclerView.setAdapter(mAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

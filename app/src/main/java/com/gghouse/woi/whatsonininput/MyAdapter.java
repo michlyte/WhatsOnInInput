@@ -1,64 +1,70 @@
 package com.gghouse.woi.whatsonininput;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.gghouse.woi.whatsonininput.model.Dummy;
+import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 /**
  * Created by michaelhalim on 2/10/17.
  */
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
-    private String[] mDataset;
+    private Context mContext;
+    private List<Dummy> mDataset;
 
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public View mView;
+        public ImageView ivImage;
         public TextView tvTitle;
+        public TextView tvSubtitle;
 
         public ViewHolder(View v) {
             super(v);
             mView = v;
+            ivImage = (ImageView) v.findViewById(R.id.iv_AI_image);
             tvTitle = (TextView) v.findViewById(R.id.tv_AI_title);
+            tvSubtitle = (TextView) v.findViewById(R.id.tv_AI_subtitle);
         }
     }
 
-    // Provide a suitable constructor (depends on the kind of dataset)
-    public MyAdapter(String[] myDataset) {
+    public MyAdapter(Context context, List<Dummy> myDataset) {
+        mContext = context;
         mDataset = myDataset;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
-        // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.adapter_item, parent, false);
-        // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.tvTitle.setText(mDataset[position]);
-
+        final Dummy dummy = mDataset.get(position);
+        holder.tvTitle.setText(dummy.getTitle());
+        holder.tvSubtitle.setText(dummy.getSubtitle());
+        Picasso.with(mContext)
+                .load(dummy.getDrawable())
+                .fit()
+                .centerInside()
+                .into(holder.ivImage);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }
