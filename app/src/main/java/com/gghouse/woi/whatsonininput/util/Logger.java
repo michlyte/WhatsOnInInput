@@ -2,7 +2,7 @@ package com.gghouse.woi.whatsonininput.util;
 
 import android.util.Log;
 
-import static com.gghouse.woi.whatsonininput.Config.LOG_ENABLE;
+import static com.gghouse.woi.whatsonininput.common.Config.LOG_ENABLE;
 
 /**
  * Created by michaelhalim on 9/17/16.

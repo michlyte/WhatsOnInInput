@@ -22,6 +22,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/outline">
+
+                    <ImageView
+                        android:id="@+id/iv_AA_addImage"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@android:drawable/ic_input_add" />
+                </LinearLayout>
+            </LinearLayout>
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -67,10 +85,10 @@
 
                 <EditText
                     android:id="@+id/et_AM_Alamat"
-                    style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_alamat" />
+                    android:hint="@string/prompt_alamat"
+                    android:minLines="2" />
 
             </android.support.design.widget.TextInputLayout>
 

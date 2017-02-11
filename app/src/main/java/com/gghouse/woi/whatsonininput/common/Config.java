@@ -1,4 +1,4 @@
-package com.gghouse.woi.whatsonininput;
+package com.gghouse.woi.whatsonininput.common;
 
 /**
  * Created by michaelhalim on 2/11/17.
