@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_Developer"
+                    android:id="@+id/et_AM_developer"
                     style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_Alamat"
+                    android:id="@+id/et_AM_alamat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_alamat"

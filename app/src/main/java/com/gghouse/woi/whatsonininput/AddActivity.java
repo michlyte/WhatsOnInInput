@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,12 @@ public class AddActivity extends AppCompatActivity {
     private ImageView mIVAddImage2;
     private ImageView mIVAddImage3;
     private EditText mETDaerah;
+    private EditText mETKompleks;
+    private EditText mETDeveloper;
+    private EditText mETAlamat;
+    private EditText mETTelepon;
+    private EditText mETWeb;
+    private EditText mETEmail;
 
     private List<File> photos;
 
@@ -60,14 +67,22 @@ public class AddActivity extends AppCompatActivity {
 
         EasyImage.configuration(this)
                 .setImagesFolderName(getResources().getString(R.string.app_name)) //images folder name, default is "EasyImage"
-                //.saveInAppExternalFilesDir() //if you want to use root internal memory for storying images
-                .saveInRootPicturesDirectory(); //if you want to use internal memory for storying images - default
+                .setCopyExistingPicturesToPublicLocation(true);
+//                .saveInAppExternalFilesDir();
+//                .saveInRootPicturesDirectory(); //if you want to use internal memory for storying images - default
 
         mLLTemplate = (LinearLayout) findViewById(R.id.ll_AA_template);
         mIVAddImage1 = (ImageView) findViewById(R.id.iv_AA_addImage1);
         mIVAddImage2 = (ImageView) findViewById(R.id.iv_AA_addImage2);
         mIVAddImage3 = (ImageView) findViewById(R.id.iv_AA_addImage3);
+
         mETDaerah = (EditText) findViewById(R.id.et_AM_daerah);
+        mETKompleks = (EditText) findViewById(R.id.et_AM_kompleks);
+        mETDeveloper = (EditText) findViewById(R.id.et_AM_developer);
+        mETAlamat = (EditText) findViewById(R.id.et_AM_alamat);
+        mETTelepon = (EditText) findViewById(R.id.et_AM_telepon);
+        mETWeb = (EditText) findViewById(R.id.et_AM_web);
+        mETEmail = (EditText) findViewById(R.id.et_AM_email);
 
         mIVAddImage1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +120,7 @@ public class AddActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_add:
+                attemptAdd();
                 return true;
         }
 
@@ -192,5 +208,38 @@ public class AddActivity extends AppCompatActivity {
                 .fit()
                 .centerInside()
                 .into(imageView);
+    }
+
+    private void attemptAdd() {
+        mETDaerah.setError(null);
+        mETKompleks.setError(null);
+        mETDeveloper.setError(null);
+        mETAlamat.setError(null);
+        mETTelepon.setError(null);
+        mETWeb.setError(null);
+        mETEmail.setError(null);
+
+        String daerah = mETDaerah.getText().toString();
+        String kompleks = mETKompleks.getText().toString();
+        String developer = mETDeveloper.getText().toString();
+        String alamat = mETAlamat.getText().toString();
+        String telepon = mETTelepon.getText().toString();
+        String web = mETWeb.getText().toString();
+        String email = mETEmail.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        if (TextUtils.isEmpty(daerah)) {
+            mETDaerah.setError(getString(R.string.error_field_required));
+            focusView = mETDaerah;
+            cancel = true;
+        }
+
+        if (cancel) {
+            focusView.requestFocus();
+        } else {
+            Logger.log("Data OK");
+        }
     }
 }
