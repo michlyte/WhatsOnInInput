@@ -37,5 +37,7 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
+    compile 'com.github.pwittchen:prefser:2.0.6'
+    compile 'io.reactivex:rxandroid:1.1.0'
     testCompile 'junit:junit:4.12'
 }

@@ -11,7 +11,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.github.pwittchen.prefser.library.Prefser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,19 @@ public class SettingsActivity extends AppCompatActivity {
     private List<String> mPOIList;
     private List<String> mPOINameList;
 
+    private Prefser mPrefser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mPrefser = new Prefser(this);
 
         mSCSPOI = (Spinner) findViewById(R.id.s_CS_poi);
         mSCSPOIName = (Spinner) findViewById(R.id.s_CS_poiName);
@@ -54,11 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
         mSCSPOI.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                mPrefser.put(Config.P_POI, mPOIList.get(position));
+
                 if (position == 1) {
                     setPOINameData();
                 } else {
-                    mPOINameList.clear();
-                    mPOINameAdapter.notifyDataSetChanged();
+                    setPOINameClearData();
                 }
             }
 
@@ -72,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         mSCSPOIName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+                mPrefser.put(Config.P_POI_NAME, mPOINameList.get(position));
             }
 
             @Override
@@ -86,6 +96,11 @@ public class SettingsActivity extends AppCompatActivity {
         mPOINameList.clear();
         mPOINameList.add("1");
         mPOINameList.add("2");
+        mPOINameAdapter.notifyDataSetChanged();
+    }
+
+    private void setPOINameClearData() {
+        mPOINameList.clear();
         mPOINameAdapter.notifyDataSetChanged();
     }
 }

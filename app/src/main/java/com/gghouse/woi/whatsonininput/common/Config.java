@@ -10,4 +10,8 @@ public interface Config {
     String BASE_URL = "http://jsonplaceholder.typicode.com/";
     int CONNECT_TIMEOUT = 60;
     int READ_TIMEOUT = 60;
+
+    String P_POI = "POI";
+    String P_POI_NAME = "POI_NAME";
+    String P_CATEGORY = "CATEGORY";
 }
