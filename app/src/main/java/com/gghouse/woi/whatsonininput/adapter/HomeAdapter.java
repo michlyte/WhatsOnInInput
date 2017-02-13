@@ -1,4 +1,4 @@
-package com.gghouse.woi.whatsonininput;
+package com.gghouse.woi.whatsonininput.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.squareup.picasso.Picasso;
 
@@ -17,7 +19,7 @@ import java.util.List;
  * Created by michaelhalim on 2/10/17.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private Context mContext;
     private List<Dummy> mDataset;
     private HomeOnClickListener mListener;
@@ -37,17 +39,17 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         }
     }
 
-    public MyAdapter(Context context, List<Dummy> myDataset, HomeOnClickListener listener) {
+    public HomeAdapter(Context context, List<Dummy> myDataset, HomeOnClickListener listener) {
         mContext = context;
         mDataset = myDataset;
         mListener = listener;
     }
 
     @Override
-    public MyAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public HomeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                     int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_item, parent, false);
+                .inflate(R.layout.adater_home_item, parent, false);
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }

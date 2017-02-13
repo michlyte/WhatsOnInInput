@@ -18,10 +18,9 @@
 
         <TextView
             android:id="@+id/tv_AI_title"
+            style="@style/MH.TextView.Title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/tv_AI_subtitle"

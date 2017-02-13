@@ -8,12 +8,16 @@
     <string name="prompt_telepon">Telepon</string>
     <string name="prompt_web">Web</string>
     <string name="prompt_email">Email</string>
+    <string name="prompt_poi">POI</string>
+    <string name="prompt_poi_name">POI Name</string>
+    <string name="prompt_category">Category</string>
 
     <string name="action_next">Next</string>
-    <string name="title_activity_home">HomeActivity</string>
-
     <string name="action_settings">Settings</string>
     <string name="action_add">Add</string>
+
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
 
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_email">This email address is invalid</string>

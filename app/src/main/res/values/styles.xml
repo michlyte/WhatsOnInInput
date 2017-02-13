@@ -10,6 +10,13 @@
 
     <style name="MH" />
 
+    <style name="MH.TextView" parent="android:Widget.TextView" />
+
+    <style name="MH.TextView.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="MH.EditText" />
 
     <style name="MH.EditText.Text" parent="android:Widget.EditText">

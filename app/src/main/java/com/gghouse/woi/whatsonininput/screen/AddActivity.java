@@ -1,4 +1,4 @@
-package com.gghouse.woi.whatsonininput;
+package com.gghouse.woi.whatsonininput.screen;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.squareup.picasso.Picasso;
 

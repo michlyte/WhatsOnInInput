@@ -1,4 +1,4 @@
-package com.gghouse.woi.whatsonininput;
+package com.gghouse.woi.whatsonininput.listener;
 
 import com.gghouse.woi.whatsonininput.model.Dummy;
 
