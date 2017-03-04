@@ -11,6 +11,8 @@ public interface Config {
     int CONNECT_TIMEOUT = 60;
     int READ_TIMEOUT = 60;
 
+    // Params
+    String IP_ADDRESS = "IP_ADDRESS";
     String P_POI = "POI";
     String P_POI_NAME = "POI_NAME";
     String P_CATEGORY = "CATEGORY";

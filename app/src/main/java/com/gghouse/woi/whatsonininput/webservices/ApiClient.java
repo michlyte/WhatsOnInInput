@@ -52,4 +52,23 @@ public class ApiClient {
         }
         return mRetrofit.create(ApiService.class);
     }
+
+    public static ApiService generateClientWithNewIP(String ip) {
+        mRetrofit = null;
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .connectTimeout(Config.CONNECT_TIMEOUT, TimeUnit.SECONDS)
+                .readTimeout(Config.READ_TIMEOUT, TimeUnit.SECONDS)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+
+        mRetrofit = new Retrofit.Builder()
+                .baseUrl(ip)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        return mRetrofit.create(ApiService.class);
+    }
 }

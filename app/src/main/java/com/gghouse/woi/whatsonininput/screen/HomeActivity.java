@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
-import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
+import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.util.Logger;
 

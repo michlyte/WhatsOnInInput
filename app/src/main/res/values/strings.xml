@@ -11,6 +11,13 @@
     <string name="prompt_poi">POI</string>
     <string name="prompt_poi_name">POI Name</string>
     <string name="prompt_category">Category</string>
+    <string name="prompt_ip_address">IP Address</string>
+    <string name="prompt_ip">192.168.0.1</string>
+    <string name="prompt_konfirmasi">Konfirmasi</string>
+    <string name="prompt_pengaturan_konfirmasi">Apakah anda yakin untuk melakukan perubahan?</string>
+    <string name="prompt_setuju">Setuju</string>
+    <string name="prompt_batal">Batal</string>
+    <string name="prompt_tidak">Tidak</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>
