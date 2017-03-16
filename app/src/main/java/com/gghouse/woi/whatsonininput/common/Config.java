@@ -22,7 +22,8 @@ public interface Config {
 
     // Params
     String IP_ADDRESS = "IP_ADDRESS";
-    String P_POI = "POI";
-    String P_POI_NAME = "POI_NAME";
+    String P_CITY = "CITY";
+    String P_AREA_CATEGORY = "AREA_CATEGORY";
+    String P_AREA_NAME = "AREA_NAME";
     String P_CATEGORY = "CATEGORY";
 }

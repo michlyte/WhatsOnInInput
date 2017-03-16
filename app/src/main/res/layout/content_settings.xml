@@ -34,35 +34,51 @@
         android:hint="@string/prompt_ip" />
 
     <TextView
-        android:id="@+id/tv_CS_poi"
+        android:id="@+id/tv_CS_city"
         style="@style/MH.TextView.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:text="@string/prompt_poi" />
+        android:text="@string/prompt_city" />
 
     <Spinner
-        android:id="@+id/s_CS_poi"
+        android:id="@+id/s_CS_city"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"></Spinner>
+        android:layout_marginTop="5dp" />
 
     <TextView
-        android:id="@+id/tv_CS_poiName"
+        android:id="@+id/tv_CS_areaCategory"
         style="@style/MH.TextView.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:text="@string/prompt_poi_name" />
+        android:text="@string/prompt_area_category" />
 
     <Spinner
-        android:id="@+id/s_CS_poiName"
+        android:id="@+id/s_CS_areaCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"></Spinner>
+        android:layout_marginTop="5dp" />
+
+    <TextView
+        android:id="@+id/tv_CS_areaName"
+        style="@style/MH.TextView.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:text="@string/prompt_area_name" />
+
+    <Spinner
+        android:id="@+id/s_CS_areaName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp" />
 
 </LinearLayout>

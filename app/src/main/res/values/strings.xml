@@ -8,8 +8,9 @@
     <string name="prompt_telepon">Telepon</string>
     <string name="prompt_web">Web</string>
     <string name="prompt_email">Email</string>
-    <string name="prompt_poi">POI</string>
-    <string name="prompt_poi_name">POI Name</string>
+    <string name="prompt_city">City</string>
+    <string name="prompt_area_category">Area Category</string>
+    <string name="prompt_area_name">Area Name</string>
     <string name="prompt_category">Category</string>
     <string name="prompt_ip_address">IP Address</string>
     <string name="prompt_ip">192.168.0.1</string>

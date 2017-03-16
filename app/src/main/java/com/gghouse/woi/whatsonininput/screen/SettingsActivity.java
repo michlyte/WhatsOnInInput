@@ -23,17 +23,20 @@ import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Spinner mSCSPOI;
-    private Spinner mSCSPOIName;
-    private EditText mETIPAddress;
-
-    private ArrayAdapter<String> mPOIAdapter;
-    private ArrayAdapter<String> mPOINameAdapter;
-
-    private List<String> mPOIList;
-    private List<String> mPOINameList;
-
     private Prefser mPrefser;
+
+    private EditText mETIPAddress;
+    private Spinner mSCSCity;
+    private Spinner mSCSAreaCategory;
+    private Spinner mSCSAreaName;
+
+    private ArrayAdapter<String> mAdapterCity;
+    private ArrayAdapter<String> mAdapterAreaCategory;
+    private ArrayAdapter<String> mAdapterAreaName;
+
+    private List<String> mListCity;
+    private List<String> mListAreaCategory;
+    private List<String> mListAreaName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,10 @@ public class SettingsActivity extends AppCompatActivity {
 
         mPrefser = new Prefser(this);
 
-        mSCSPOI = (Spinner) findViewById(R.id.s_CS_poi);
-        mSCSPOIName = (Spinner) findViewById(R.id.s_CS_poiName);
         mETIPAddress = (EditText) findViewById(R.id.et_CS_ip);
+        mSCSCity = (Spinner) findViewById(R.id.s_CS_city);
+        mSCSAreaCategory = (Spinner) findViewById(R.id.s_CS_areaCategory);
+        mSCSAreaName = (Spinner) findViewById(R.id.s_CS_areaName);
 
         if (mPrefser.contains(Config.IP_ADDRESS)) {
             mETIPAddress.setText(mPrefser.get(Config.IP_ADDRESS, String.class, Config.BASE_URL));
@@ -58,27 +62,25 @@ public class SettingsActivity extends AppCompatActivity {
             mETIPAddress.setText(mPrefser.get(Config.IP_ADDRESS, String.class, Config.BASE_URL));
         }
 
-        mPOIList = new ArrayList<String>();
-        mPOINameList = new ArrayList<String>();
+        mListCity = new ArrayList<String>();
+        mListAreaCategory = new ArrayList<String>();
+        mListAreaName = new ArrayList<String>();
 
-        mPOIList.add("Automobile");
-        mPOIList.add("Business Services");
-        mPOIList.add("Computers");
-        mPOIList.add("Education");
-        mPOIList.add("Personal");
-        mPOIList.add("Travel");
+        mListCity.add("Bandung");
+        mListCity.add("Bogor");
 
-        mPOIAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mPOIList);
-        mPOINameAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mPOINameList);
+        mAdapterCity = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListCity);
+        mAdapterAreaCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListAreaCategory);
+        mAdapterAreaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListAreaName);
 
-        mSCSPOI.setAdapter(mPOIAdapter);
-        mSCSPOI.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSCSCity.setAdapter(mAdapterCity);
+        mSCSCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
-                    setPOINameData();
+                    setAreaCategoryData();
                 } else {
-                    setPOINameClearData();
+                    clearAreaCategoryData();
                 }
             }
 
@@ -88,11 +90,11 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mSCSPOIName.setAdapter(mPOINameAdapter);
-        mSCSPOIName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mSCSAreaCategory.setAdapter(mAdapterAreaCategory);
+        mSCSAreaCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPrefser.put(Config.P_POI_NAME, mPOINameList.get(position));
+                mPrefser.put(Config.P_AREA_CATEGORY, mListAreaCategory.get(position));
             }
 
             @Override
@@ -101,12 +103,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if (mPrefser.contains(Config.P_POI)) {
-            String pPOI = mPrefser.get(Config.P_POI, String.class, "");
+        if (mPrefser.contains(Config.P_CITY)) {
+            String pCity = mPrefser.get(Config.P_CITY, String.class, "");
             boolean isFound = false;
             int idx = 0;
-            for (String poi : mPOIList) {
-                if (pPOI.equals(poi)) {
+            for (String city : mListCity) {
+                if (pCity.equals(city)) {
                     isFound = true;
                     break;
                 }
@@ -114,12 +116,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             if (isFound) {
-                mSCSPOI.setSelection(idx);
+                mSCSCity.setSelection(idx);
             } else {
-                Logger.log("POI [" + pPOI + "] tidak dapat ditemukan.");
+                Logger.log("City [" + pCity + "] tidak dapat ditemukan.");
             }
         } else {
-            mPrefser.put(Config.P_POI, "");
+            mPrefser.put(Config.P_CITY, "");
         }
     }
 
@@ -139,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     mPrefser.put(Config.IP_ADDRESS, mETIPAddress.getText().toString());
-                                    mPrefser.put(Config.P_POI, mPOIList.get(mSCSPOI.getSelectedItemPosition()));
+                                    mPrefser.put(Config.P_CITY, mListCity.get(mSCSCity.getSelectedItemPosition()));
                                     finish();
                                 }
                             })
@@ -158,16 +160,20 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void setPOINameData() {
-        mPOINameList.clear();
-        mPOINameList.add("1");
-        mPOINameList.add("2");
-        mPOINameAdapter.notifyDataSetChanged();
+    private void onBindView() {
+
     }
 
-    private void setPOINameClearData() {
-        mPOINameList.clear();
-        mPOINameAdapter.notifyDataSetChanged();
+    private void setAreaCategoryData() {
+        mListAreaCategory.clear();
+        mListAreaCategory.add("1");
+        mListAreaCategory.add("2");
+        mAdapterAreaCategory.notifyDataSetChanged();
+    }
+
+    private void clearAreaCategoryData() {
+        mListAreaCategory.clear();
+        mAdapterAreaCategory.notifyDataSetChanged();
     }
 
     private boolean changesDetected() {
@@ -177,8 +183,8 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             }
         }
-        if (mPrefser.contains(Config.P_POI)) {
-            if (!mPOIList.get(mSCSPOI.getSelectedItemPosition()).equals(mPrefser.get(Config.P_POI, String.class, ""))) {
+        if (mPrefser.contains(Config.P_CITY)) {
+            if (!mListCity.get(mSCSCity.getSelectedItemPosition()).equals(mPrefser.get(Config.P_CITY, String.class, ""))) {
                 return true;
             }
         }
