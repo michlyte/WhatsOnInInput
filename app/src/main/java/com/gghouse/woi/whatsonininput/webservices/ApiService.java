@@ -1,6 +1,7 @@
 package com.gghouse.woi.whatsonininput.webservices;
 
 import com.gghouse.woi.whatsonininput.webservices.model.Dummy;
+import com.gghouse.woi.whatsonininput.webservices.response.ResponseGetStores;
 
 import java.util.List;
 
@@ -33,4 +34,10 @@ public interface ApiService {
     // Michael Halim : Retrofit post with body
     @POST("posts")
     Call<Dummy> dummyPostBody(@Body Dummy dummy);
+
+    /*
+     * PROD
+     */
+    @GET("stores")
+    Call<ResponseGetStores> getStores();
 }

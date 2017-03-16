@@ -11,10 +11,17 @@ import android.view.MenuItem;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
+import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.response.ResponseGetStores;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
@@ -30,6 +37,8 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ws_getStores();
 
         mListener = this;
 
@@ -76,5 +85,26 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     @Override
     public void onClick(Store store) {
         Logger.log(store.getName());
+    }
+
+    private void ws_getStores() {
+        Call<ResponseGetStores> callGetStores = ApiClient.getClient().getStores();
+        callGetStores.enqueue(new Callback<ResponseGetStores>() {
+            @Override
+            public void onResponse(Call<ResponseGetStores> call, Response<ResponseGetStores> response) {
+                Logger.log(Config.ON_RESPONSE);
+                ResponseGetStores responseGetStores = response.body();
+                if (responseGetStores.getCode() == Config.CODE_200) {
+
+                } else {
+                    Logger.log("Failed code: " + responseGetStores.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseGetStores> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+            }
+        });
     }
 }
