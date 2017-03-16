@@ -114,7 +114,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
 
             if (isFound) {
-                Logger.log("POI [" + pPOI + "] index [" + idx + "]");
                 mSCSPOI.setSelection(idx);
             } else {
                 Logger.log("POI [" + pPOI + "] tidak dapat ditemukan.");

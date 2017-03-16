@@ -13,19 +13,15 @@ import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
+import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Dummy> dummyList = new ArrayList<Dummy>() {{
-        add(new Dummy("Michael Halim", "This is some short description.", R.mipmap.ic_launcher));
-    }};
+
     private HomeOnClickListener mListener;
 
     @Override
@@ -48,7 +44,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new HomeAdapter(this, dummyList, mListener);
+        mAdapter = new HomeAdapter(this, Dummy.itemsStore, mListener, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -78,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     }
 
     @Override
-    public void onClick(Dummy dummy) {
-        Logger.log(dummy.getTitle());
+    public void onClick(Store store) {
+        Logger.log(store.getName());
     }
 }

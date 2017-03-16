@@ -1,41 +1,25 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import com.gghouse.woi.whatsonininput.R;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by michaelhalim on 2/11/17.
  */
 
-public class Dummy {
-    private String title;
-    private String subtitle;
-    private Integer drawable;
+public abstract class Dummy {
+    private static final int COUNT_STORE = 5;
 
-    public Dummy(String title, String subtitle, Integer drawable) {
-        this.title = title;
-        this.subtitle = subtitle;
-        this.drawable = drawable;
-    }
+    public static List<Store> itemsStore;
 
-    public String getTitle() {
-        return title;
-    }
+    static {
+        itemsStore = new ArrayList<Store>();
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public void setSubtitle(String subtitle) {
-        this.subtitle = subtitle;
-    }
-
-    public Integer getDrawable() {
-        return drawable;
-    }
-
-    public void setDrawable(Integer drawable) {
-        this.drawable = drawable;
+        for (Long i = 0L; i < COUNT_STORE; i++) {
+            itemsStore.add(new Store(i, "Store " + (i + 1), "Description " + (i + 1), R.mipmap.ic_launcher
+            ));
+        }
     }
 }

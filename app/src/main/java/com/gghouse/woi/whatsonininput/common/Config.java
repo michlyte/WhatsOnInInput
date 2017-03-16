@@ -5,6 +5,7 @@ package com.gghouse.woi.whatsonininput.common;
  */
 
 public interface Config {
+    boolean DUMMY_DEV = true;
     boolean LOG_ENABLE = true;
 
     String BASE_URL = "http://jsonplaceholder.typicode.com/";

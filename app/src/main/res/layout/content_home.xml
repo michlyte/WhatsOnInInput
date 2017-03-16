@@ -11,6 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.gghouse.woi.whatsonininput.screen.HomeActivity"
+    tools:listitem="@layout/adater_home_item"
     tools:showIn="@layout/activity_home">
 
 </android.support.v7.widget.RecyclerView>
