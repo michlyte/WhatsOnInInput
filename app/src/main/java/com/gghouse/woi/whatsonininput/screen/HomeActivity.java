@@ -2,6 +2,7 @@ package com.gghouse.woi.whatsonininput.screen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +17,19 @@ import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
-import com.gghouse.woi.whatsonininput.webservices.response.ResponseGetStores;
+import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -39,6 +45,16 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         setSupportActionBar(toolbar);
 
         ws_getStores();
+        ws_getCities();
+        ws_getAreaCategories();
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_CH_swipeRefreshLayout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         mListener = this;
 
@@ -88,12 +104,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     }
 
     private void ws_getStores() {
-        Call<ResponseGetStores> callGetStores = ApiClient.getClient().getStores();
-        callGetStores.enqueue(new Callback<ResponseGetStores>() {
+        Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores();
+        callGetStores.enqueue(new Callback<StoreListResponse>() {
             @Override
-            public void onResponse(Call<ResponseGetStores> call, Response<ResponseGetStores> response) {
-                Logger.log(Config.ON_RESPONSE);
-                ResponseGetStores responseGetStores = response.body();
+            public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
+                StoreListResponse responseGetStores = response.body();
                 if (responseGetStores.getCode() == Config.CODE_200) {
 
                 } else {
@@ -102,7 +117,53 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
             }
 
             @Override
-            public void onFailure(Call<ResponseGetStores> call, Throwable t) {
+            public void onFailure(Call<StoreListResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+            }
+        });
+    }
+
+    private void ws_getCities() {
+        Call<CityListResponse> callGetCities = ApiClient.getClient().getCities();
+        callGetCities.enqueue(new Callback<CityListResponse>() {
+            @Override
+            public void onResponse(Call<CityListResponse> call, Response<CityListResponse> response) {
+                CityListResponse cityListResponse = response.body();
+                switch (cityListResponse.getCode()) {
+                    case Config.CODE_200:
+                        Session.saveCities(getApplicationContext(), cityListResponse.getData());
+                        break;
+                    default:
+                        Logger.log("Failed code: " + cityListResponse.getCode());
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CityListResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+            }
+        });
+    }
+
+    private void ws_getAreaCategories() {
+        Call<AreaCategoryListResponse> callGetAareCategories = ApiClient.getClient().getAreaCategories();
+        callGetAareCategories.enqueue(new Callback<AreaCategoryListResponse>() {
+            @Override
+            public void onResponse(Call<AreaCategoryListResponse> call, Response<AreaCategoryListResponse> response) {
+                AreaCategoryListResponse areaCategoryListResponse = response.body();
+                switch (areaCategoryListResponse.getCode()) {
+                    case Config.CODE_200:
+                        Session.saveAreaCategories(getApplicationContext(), areaCategoryListResponse.getData());
+                        break;
+                    default:
+                        Logger.log("Failed code: " + areaCategoryListResponse.getCode());
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AreaCategoryListResponse> call, Throwable t) {
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });

@@ -8,8 +8,8 @@ public interface Config {
     boolean DUMMY_DEV = true;
     boolean LOG_ENABLE = true;
 
-//    String BASE_URL = "http://jsonplaceholder.typicode.com/";
-    String BASE_URL = "http://10.0.2.2:8093/";
+//    String BASE_URL = "http://jsonplaceholder.typicode.com";
+    String BASE_URL = "http://10.0.2.2:8093";
     int CONNECT_TIMEOUT = 60;
     int READ_TIMEOUT = 60;
 
@@ -19,11 +19,4 @@ public interface Config {
     // Logger
     String ON_RESPONSE = "onResponse";
     String ON_FAILURE = "onFailure";
-
-    // Params
-    String IP_ADDRESS = "IP_ADDRESS";
-    String P_CITY = "CITY";
-    String P_AREA_CATEGORY = "AREA_CATEGORY";
-    String P_AREA_NAME = "AREA_NAME";
-    String P_CATEGORY = "CATEGORY";
 }

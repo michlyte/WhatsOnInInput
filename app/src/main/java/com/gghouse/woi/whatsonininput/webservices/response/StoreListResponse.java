@@ -9,7 +9,7 @@ import java.util.List;
  * Created by michael on 3/16/2017.
  */
 
-public class ResponseGetStores extends GenericResponse {
+public class StoreListResponse extends GenericResponse {
     private List<Store> data;
     private Pagination pagination;
 

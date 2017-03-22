@@ -1,7 +1,10 @@
 package com.gghouse.woi.whatsonininput.webservices;
 
 import com.gghouse.woi.whatsonininput.webservices.model.Dummy;
-import com.gghouse.woi.whatsonininput.webservices.response.ResponseGetStores;
+import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import java.util.List;
 
@@ -12,6 +15,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by michael on 9/18/2016.
@@ -19,25 +23,34 @@ import retrofit2.http.Path;
  */
 public interface ApiService {
     // Michael Halim : Retrofit get only
-    @GET("posts")
+    @GET("/posts")
     Call<List<Dummy>> dummyGetList();
 
     // Michael Halim : Retrofit get with parameter
-    @GET("posts/{id}")
+    @GET("/posts/{id}")
     Call<Dummy> dummyGet(@Path("id") int id);
 
     // Michael Halim : Retrofit post
     @FormUrlEncoded
-    @POST("posts")
+    @POST("/posts")
     Call<Dummy> dummyPost(@Field("title") String title, @Field("body") String body, @Field("userId") int userId);
 
     // Michael Halim : Retrofit post with body
-    @POST("posts")
+    @POST("/posts")
     Call<Dummy> dummyPostBody(@Body Dummy dummy);
 
     /*
      * PROD
      */
-    @GET("stores")
-    Call<ResponseGetStores> getStores();
+    @GET("/stores")
+    Call<StoreListResponse> getStores();
+
+    @GET("/cities")
+    Call<CityListResponse> getCities();
+
+    @GET("/categories?type=area")
+    Call<AreaCategoryListResponse> getAreaCategories();
+
+    @GET("/areas")
+    Call<AreaNameListResponse> getAreaNames(@Query("category") long categoryId);
 }

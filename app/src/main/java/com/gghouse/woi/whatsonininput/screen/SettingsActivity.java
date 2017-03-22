@@ -15,28 +15,40 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.model.AreaCategory;
+import com.gghouse.woi.whatsonininput.model.AreaName;
+import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.util.Logger;
-import com.github.pwittchen.prefser.library.Prefser;
+import com.gghouse.woi.whatsonininput.util.Session;
+import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private Prefser mPrefser;
-
     private EditText mETIPAddress;
+
     private Spinner mSCSCity;
+    private ArrayAdapter<City> mAdapterCity;
+    private List<City> mListCity;
+    private Long mCityId;
+
     private Spinner mSCSAreaCategory;
+    private ArrayAdapter<AreaCategory> mAdapterAreaCategory;
+    private List<AreaCategory> mListAreaCategory;
+    private Long mAreaCategoryId;
+
     private Spinner mSCSAreaName;
-
-    private ArrayAdapter<String> mAdapterCity;
-    private ArrayAdapter<String> mAdapterAreaCategory;
-    private ArrayAdapter<String> mAdapterAreaName;
-
-    private List<String> mListCity;
-    private List<String> mListAreaCategory;
-    private List<String> mListAreaName;
+    private ArrayAdapter<AreaName> mAdapterAreaName;
+    private List<AreaName> mListAreaName;
+    private Long mAreaNameId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,39 +60,36 @@ public class SettingsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mPrefser = new Prefser(this);
-
+        /*
+         * IP Address
+         */
         mETIPAddress = (EditText) findViewById(R.id.et_CS_ip);
+        mETIPAddress.setText(Session.getIpAddress(this));
+
+        /*
+         * City
+         */
         mSCSCity = (Spinner) findViewById(R.id.s_CS_city);
-        mSCSAreaCategory = (Spinner) findViewById(R.id.s_CS_areaCategory);
-        mSCSAreaName = (Spinner) findViewById(R.id.s_CS_areaName);
-
-        if (mPrefser.contains(Config.IP_ADDRESS)) {
-            mETIPAddress.setText(mPrefser.get(Config.IP_ADDRESS, String.class, Config.BASE_URL));
-        } else {
-            mPrefser.put(Config.IP_ADDRESS, Config.BASE_URL);
-            mETIPAddress.setText(mPrefser.get(Config.IP_ADDRESS, String.class, Config.BASE_URL));
-        }
-
-        mListCity = new ArrayList<String>();
-        mListAreaCategory = new ArrayList<String>();
-        mListAreaName = new ArrayList<String>();
-
-        mListCity.add("Bandung");
-        mListCity.add("Bogor");
-
-        mAdapterCity = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListCity);
-        mAdapterAreaCategory = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListAreaCategory);
-        mAdapterAreaName = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mListAreaName);
-
+        mListCity = Arrays.asList(Session.getCities(this));
+        mAdapterCity = new ArrayAdapter<City>(this, android.R.layout.simple_spinner_dropdown_item, mListCity);
         mSCSCity.setAdapter(mAdapterCity);
+
+        mCityId = Session.getCityId(this);
+        int initCityPosition = 0;
+        for (int i = 0; i < mListCity.size(); i++) {
+            if (mListCity.get(i).getCityId() == mCityId) {
+                initCityPosition = i;
+                break;
+            }
+        }
+        mSCSCity.setSelection(initCityPosition);
+
         mSCSCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 1) {
-                    setAreaCategoryData();
-                } else {
-                    clearAreaCategoryData();
+                if (mListCity.size() > 0 && position < mListCity.size()) {
+                    City city = mListCity.get(position);
+                    mCityId = city.getCityId();
                 }
             }
 
@@ -90,11 +99,32 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        /*
+         * Area Category
+         */
+        mSCSAreaCategory = (Spinner) findViewById(R.id.s_CS_areaCategory);
+        mListAreaCategory = Arrays.asList(Session.getAreaCategories(this));
+        mAdapterAreaCategory = new ArrayAdapter<AreaCategory>(this, android.R.layout.simple_spinner_dropdown_item, mListAreaCategory);
         mSCSAreaCategory.setAdapter(mAdapterAreaCategory);
+
+        mAreaCategoryId = Session.getAreaCategoryId(this);
+        int initAreaCategoryPosition = 0;
+        for (int i = 0; i < mListAreaCategory.size(); i++) {
+            if (mListAreaCategory.get(i).getCategoryId() == mAreaCategoryId) {
+                initAreaCategoryPosition = i;
+                break;
+            }
+        }
+        mSCSAreaCategory.setSelection(initAreaCategoryPosition);
+
         mSCSAreaCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mPrefser.put(Config.P_AREA_CATEGORY, mListAreaCategory.get(position));
+                if (mListAreaCategory.size() > 0 && position < mListAreaCategory.size()) {
+                    AreaCategory areaCategory = mListAreaCategory.get(position);
+                    mAreaCategoryId = areaCategory.getCategoryId();
+                    ws_getAreaNames(areaCategory.getCategoryId());
+                }
             }
 
             @Override
@@ -103,26 +133,38 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        if (mPrefser.contains(Config.P_CITY)) {
-            String pCity = mPrefser.get(Config.P_CITY, String.class, "");
-            boolean isFound = false;
-            int idx = 0;
-            for (String city : mListCity) {
-                if (pCity.equals(city)) {
-                    isFound = true;
-                    break;
+        /*
+         * Area Name
+         */
+        mSCSAreaName = (Spinner) findViewById(R.id.s_CS_areaName);
+        mListAreaName = new ArrayList<AreaName>();
+        mAdapterAreaName = new ArrayAdapter<AreaName>(this, android.R.layout.simple_spinner_dropdown_item, mListAreaName);
+        mSCSAreaName.setAdapter(mAdapterAreaName);
+
+        mAreaNameId = Session.getAreaNameId(this);
+        int initAreaNamePosition = 0;
+        for (int i = 0; i < mListAreaName.size(); i++) {
+            if (mListAreaName.get(i).getAreaId() == mAreaNameId) {
+                initAreaNamePosition = i;
+                break;
+            }
+        }
+        mSCSAreaName.setSelection(initAreaNamePosition);
+
+        mSCSAreaName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (mListAreaName.size() > 0 && position < mListAreaName.size()) {
+                    AreaName areaName = mListAreaName.get(position);
+                    mAreaNameId = areaName.getAreaId();
                 }
-                idx++;
             }
 
-            if (isFound) {
-                mSCSCity.setSelection(idx);
-            } else {
-                Logger.log("City [" + pCity + "] tidak dapat ditemukan.");
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
-        } else {
-            mPrefser.put(Config.P_CITY, "");
-        }
+        });
     }
 
     @Override
@@ -140,8 +182,10 @@ public class SettingsActivity extends AppCompatActivity {
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    mPrefser.put(Config.IP_ADDRESS, mETIPAddress.getText().toString());
-                                    mPrefser.put(Config.P_CITY, mListCity.get(mSCSCity.getSelectedItemPosition()));
+                                    Session.saveIpAddress(getApplicationContext(), mETIPAddress.getText().toString());
+                                    Session.saveCityId(getApplicationContext(), mCityId);
+                                    Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
+                                    Session.saveAreaNameId(getApplicationContext(), mAreaNameId);
                                     finish();
                                 }
                             })
@@ -160,34 +204,107 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void onBindView() {
-
-    }
-
-    private void setAreaCategoryData() {
-        mListAreaCategory.clear();
-        mListAreaCategory.add("1");
-        mListAreaCategory.add("2");
-        mAdapterAreaCategory.notifyDataSetChanged();
-    }
-
-    private void clearAreaCategoryData() {
-        mListAreaCategory.clear();
-        mAdapterAreaCategory.notifyDataSetChanged();
-    }
-
     private boolean changesDetected() {
         boolean isUpdated = false;
-        if (mPrefser.contains(Config.IP_ADDRESS)) {
-            if (!mETIPAddress.getText().toString().equals(mPrefser.get(Config.IP_ADDRESS, String.class, Config.BASE_URL))) {
-                return true;
-            }
+        if (isChanged(Settings.IP_ADDRESS, Session.getIpAddress(this), mETIPAddress.getText().toString())) {
+            isUpdated = true;
         }
-        if (mPrefser.contains(Config.P_CITY)) {
-            if (!mListCity.get(mSCSCity.getSelectedItemPosition()).equals(mPrefser.get(Config.P_CITY, String.class, ""))) {
-                return true;
-            }
+        if (isChanged(Settings.CITY, Session.getCityId(this), mCityId)) {
+            isUpdated = true;
+        }
+        if (isChanged(Settings.AREA_CATEGORY, Session.getAreaCategoryId(this), mAreaCategoryId)) {
+            isUpdated = true;
+        }
+        if (isChanged(Settings.AREA_NAME, Session.getAreaNameId(this), mAreaNameId)) {
+            isUpdated = true;
         }
         return isUpdated;
+    }
+
+    private boolean isChanged(Settings settings, String beforeString, String afterString) {
+        String type = "";
+        if (!beforeString.equals(afterString)) {
+            switch (settings) {
+                case IP_ADDRESS:
+                    type = "IP_ADDRESS";
+                    break;
+                case CITY:
+                    type = "CITY";
+                    break;
+                case AREA_CATEGORY:
+                    type = "AREA_CATEGORY";
+                    break;
+                case AREA_NAME:
+                    type = "AREA_NAME";
+                    break;
+            }
+            Logger.log(type + " Before: " + beforeString + ", After: " + afterString);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isChanged(Settings settings, Long beforeId, Long afterId) {
+        String type = "";
+        if (beforeId != afterId) {
+            switch (settings) {
+                case IP_ADDRESS:
+                    type = "IP_ADDRESS";
+                    break;
+                case CITY:
+                    type = "CITY";
+                    break;
+                case AREA_CATEGORY:
+                    type = "AREA_CATEGORY";
+                    break;
+                case AREA_NAME:
+                    type = "AREA_NAME";
+                    break;
+            }
+            Logger.log(type + " Before: " + beforeId + ", After: " + afterId);
+            return true;
+        }
+        return false;
+    }
+
+    private void ws_getAreaNames(final long categoryId) {
+        AreaName[] areaNames = Session.getAreaNames(this, categoryId);
+        if (areaNames.length > 0) {
+            mListAreaName.clear();
+            mListAreaName.addAll(Arrays.asList(areaNames));
+            mAdapterAreaName.notifyDataSetChanged();
+        } else {
+            Call<AreaNameListResponse> callGetAareNames = ApiClient.getClient().getAreaNames(categoryId);
+            callGetAareNames.enqueue(new Callback<AreaNameListResponse>() {
+                @Override
+                public void onResponse(Call<AreaNameListResponse> call, Response<AreaNameListResponse> response) {
+                    AreaNameListResponse areaNameListResponse = response.body();
+                    switch (areaNameListResponse.getCode()) {
+                        case Config.CODE_200:
+                            Session.saveAreaNames(getApplicationContext(), categoryId, areaNameListResponse.getData());
+
+                            mListAreaName.clear();
+                            mListAreaName.addAll(Arrays.asList(areaNameListResponse.getData()));
+                            mAdapterAreaName.notifyDataSetChanged();
+                            break;
+                        default:
+                            Logger.log("Failed code: " + areaNameListResponse.getCode());
+                            break;
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<AreaNameListResponse> call, Throwable t) {
+                    Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+                }
+            });
+        }
+    }
+
+    private enum Settings {
+        IP_ADDRESS,
+        CITY,
+        AREA_CATEGORY,
+        AREA_NAME;
     }
 }
