@@ -17,10 +17,7 @@ import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
-import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
-import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
-import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import retrofit2.Call;
@@ -45,8 +42,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         setSupportActionBar(toolbar);
 
         ws_getStores();
-        ws_getCities();
-        ws_getAreaCategories();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_CH_swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -118,52 +113,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
             @Override
             public void onFailure(Call<StoreListResponse> call, Throwable t) {
-                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
-            }
-        });
-    }
-
-    private void ws_getCities() {
-        Call<CityListResponse> callGetCities = ApiClient.getClient().getCities();
-        callGetCities.enqueue(new Callback<CityListResponse>() {
-            @Override
-            public void onResponse(Call<CityListResponse> call, Response<CityListResponse> response) {
-                CityListResponse cityListResponse = response.body();
-                switch (cityListResponse.getCode()) {
-                    case Config.CODE_200:
-                        Session.saveCities(getApplicationContext(), cityListResponse.getData());
-                        break;
-                    default:
-                        Logger.log("Failed code: " + cityListResponse.getCode());
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CityListResponse> call, Throwable t) {
-                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
-            }
-        });
-    }
-
-    private void ws_getAreaCategories() {
-        Call<AreaCategoryListResponse> callGetAareCategories = ApiClient.getClient().getAreaCategories();
-        callGetAareCategories.enqueue(new Callback<AreaCategoryListResponse>() {
-            @Override
-            public void onResponse(Call<AreaCategoryListResponse> call, Response<AreaCategoryListResponse> response) {
-                AreaCategoryListResponse areaCategoryListResponse = response.body();
-                switch (areaCategoryListResponse.getCode()) {
-                    case Config.CODE_200:
-                        Session.saveAreaCategories(getApplicationContext(), areaCategoryListResponse.getData());
-                        break;
-                    default:
-                        Logger.log("Failed code: " + areaCategoryListResponse.getCode());
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AreaCategoryListResponse> call, Throwable t) {
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });
