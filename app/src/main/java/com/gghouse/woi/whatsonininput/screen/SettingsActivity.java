@@ -374,6 +374,8 @@ public class SettingsActivity extends AppCompatActivity {
                         mListAreaCategory.clear();
                         mListAreaCategory.addAll(Arrays.asList(areaCategoryListResponse.getData()));
                         mAdapterAreaCategory.notifyDataSetChanged();
+
+                        setSpinnerSelection(Settings.AREA_CATEGORY);
                         break;
                     default:
                         Logger.log("Failed code: " + areaCategoryListResponse.getCode());
