@@ -10,12 +10,21 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.common.IntentParam;
+import com.gghouse.woi.whatsonininput.model.AreaCategory;
+import com.gghouse.woi.whatsonininput.model.AreaName;
+import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -26,21 +35,39 @@ import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddActivity extends AppCompatActivity {
 
     private int typeADD = 99;
     private LinearLayout mLLTemplate;
+
+    /*
+     * City, AreaCategory, AreaName
+     */
+    private City mCity;
+    private AreaCategory mAreaCategory;
+    private AreaName mAreaName;
+
+    private Button mBCity;
+    private Button mBAreaCategory;
+    private Button mBAreaName;
+
     private ImageView mIVAddImage1;
     private ImageView mIVAddImage2;
     private ImageView mIVAddImage3;
-    private EditText mETDaerah;
-    private EditText mETKompleks;
-    private EditText mETDeveloper;
-    private EditText mETAlamat;
-    private EditText mETTelepon;
+    private EditText mETName;
+    private EditText mETDistrict;
+    private EditText mETDescription;
+    private EditText mETAddress;
+    private EditText mETPhoneNumber;
     private EditText mETWeb;
     private EditText mETEmail;
+    private EditText mETFloor;
+    private EditText mETBlockNumber;
+    private EditText mETTags;
 
     private List<File> photos;
 
@@ -72,18 +99,32 @@ public class AddActivity extends AppCompatActivity {
 //                .saveInAppExternalFilesDir();
 //                .saveInRootPicturesDirectory(); //if you want to use internal memory for storying images - default
 
+        Intent intent = getIntent();
+        if (intent != null) {
+            mCity = (City) intent.getSerializableExtra(IntentParam.CITY);
+            mAreaCategory = (AreaCategory) intent.getSerializableExtra(IntentParam.AREA_CATEGORY);
+            mAreaName = (AreaName) intent.getSerializableExtra(IntentParam.AREA_NAME);
+        }
+
         mLLTemplate = (LinearLayout) findViewById(R.id.ll_AA_template);
         mIVAddImage1 = (ImageView) findViewById(R.id.iv_AA_addImage1);
         mIVAddImage2 = (ImageView) findViewById(R.id.iv_AA_addImage2);
         mIVAddImage3 = (ImageView) findViewById(R.id.iv_AA_addImage3);
 
-        mETDaerah = (EditText) findViewById(R.id.et_AM_daerah);
-        mETKompleks = (EditText) findViewById(R.id.et_AM_kompleks);
-        mETDeveloper = (EditText) findViewById(R.id.et_AM_developer);
-        mETAlamat = (EditText) findViewById(R.id.et_AM_alamat);
-        mETTelepon = (EditText) findViewById(R.id.et_AM_telepon);
-        mETWeb = (EditText) findViewById(R.id.et_AM_web);
+        mBCity = (Button) findViewById(R.id.b_AA_city);
+        mBAreaCategory = (Button) findViewById(R.id.b_AA_areaCategory);
+        mBAreaName = (Button) findViewById(R.id.b_AA_areaName);
+
+        mETDistrict = (EditText) findViewById(R.id.et_AA_district);
+        mETName = (EditText) findViewById(R.id.et_AA_name);
+        mETDescription = (EditText) findViewById(R.id.et_AA_description);
+        mETAddress = (EditText) findViewById(R.id.et_AA_address);
+        mETPhoneNumber = (EditText) findViewById(R.id.et_AA_phoneNumber);
+        mETWeb = (EditText) findViewById(R.id.et_AA_web);
         mETEmail = (EditText) findViewById(R.id.et_AM_email);
+        mETFloor = (EditText) findViewById(R.id.et_AA_floor);
+        mETBlockNumber = (EditText) findViewById(R.id.et_AA_blockNumber);
+        mETTags = (EditText) findViewById(R.id.et_AA_tags);
 
         mIVAddImage1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,35 +253,75 @@ public class AddActivity extends AppCompatActivity {
     }
 
     private void attemptAdd() {
-        mETDaerah.setError(null);
-        mETKompleks.setError(null);
-        mETDeveloper.setError(null);
-        mETAlamat.setError(null);
-        mETTelepon.setError(null);
+        mETDistrict.setError(null);
+        mETName.setError(null);
+        mETDescription.setError(null);
+        mETAddress.setError(null);
+        mETPhoneNumber.setError(null);
         mETWeb.setError(null);
         mETEmail.setError(null);
+        mETFloor.setError(null);
+        mETBlockNumber.setError(null);
 
-        String daerah = mETDaerah.getText().toString();
-        String kompleks = mETKompleks.getText().toString();
-        String developer = mETDeveloper.getText().toString();
-        String alamat = mETAlamat.getText().toString();
-        String telepon = mETTelepon.getText().toString();
+        String district = mETDistrict.getText().toString();
+        String name = mETName.getText().toString();
+        String description = mETDescription.getText().toString();
+        String address = mETAddress.getText().toString();
+        String phoneNumber = mETPhoneNumber.getText().toString();
         String web = mETWeb.getText().toString();
         String email = mETEmail.getText().toString();
+        String floor = mETFloor.getText().toString();
+        String blockNumber = mETBlockNumber.getText().toString();
+        String tags = mETTags.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(daerah)) {
-            mETDaerah.setError(getString(R.string.error_field_required));
-            focusView = mETDaerah;
+        if (TextUtils.isEmpty(name)) {
+            mETName.setError(getString(R.string.error_field_required));
+            focusView = mETName;
             cancel = true;
         }
 
         if (cancel) {
             focusView.requestFocus();
         } else {
-            Logger.log("Data OK");
+            ws_createStore(district, name, description, address, phoneNumber, web, email, floor, blockNumber, tags);
         }
+    }
+
+    private void ws_createStore(String district, String name, String description, String address, String phoneNumber, String web, String email, String floor, String blockNumber, String tags) {
+        StoreCreateRequest storeCreateRequest = new StoreCreateRequest();
+        storeCreateRequest.setDistrict(district);
+        storeCreateRequest.setName(name);
+        storeCreateRequest.setDescription(description);
+        storeCreateRequest.setAddress(address);
+        storeCreateRequest.setPhoneNo(phoneNumber);
+        storeCreateRequest.setWeb(web);
+        storeCreateRequest.setEmail(email);
+        storeCreateRequest.setFloor(floor);
+        storeCreateRequest.setBlockNumber(blockNumber);
+        storeCreateRequest.setStringTags(tags);
+
+        storeCreateRequest.setCategory(mAreaCategory);
+        storeCreateRequest.setAreaId(mAreaName.getAreaId());
+
+        Call<StoreCreateResponse> callCreateStore = ApiClient.getClient().createStore(storeCreateRequest);
+        callCreateStore.enqueue(new Callback<StoreCreateResponse>() {
+            @Override
+            public void onResponse(Call<StoreCreateResponse> call, Response<StoreCreateResponse> response) {
+                StoreCreateResponse storeCreateResponse = response.body();
+                if (storeCreateResponse.getCode() == Config.CODE_200) {
+
+                } else {
+                    Logger.log("Failed code: " + storeCreateResponse.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StoreCreateResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+            }
+        });
     }
 }

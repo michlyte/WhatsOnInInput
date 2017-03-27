@@ -60,23 +60,37 @@
 
             </LinearLayout>
 
-            <Spinner
-                android:id="@+id/s_AA_category"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/b_AA_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/b_AA_areaCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/b_AA_areaName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_daerah"
+                    android:id="@+id/et_AA_district"
                     style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_daerah" />
+                    android:hint="@string/prompt_district" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -85,11 +99,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_kompleks"
+                    android:id="@+id/et_AA_name"
                     style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_kompleks" />
+                    android:hint="@string/prompt_name" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -98,11 +112,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_developer"
+                    android:id="@+id/et_AA_description"
                     style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_developer" />
+                    android:hint="@string/prompt_description" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -111,11 +125,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_alamat"
+                    android:id="@+id/et_AA_address"
+                    style="@style/MH.EditText.Text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_alamat"
-                    android:minLines="2" />
+                    android:hint="@string/prompt_address" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -124,11 +138,11 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_telepon"
+                    android:id="@+id/et_AA_phoneNumber"
                     style="@style/MH.EditText.Telepon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_telepon" />
+                    android:hint="@string/prompt_phoneNumber" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -137,7 +151,7 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/et_AM_web"
+                    android:id="@+id/et_AA_web"
                     style="@style/MH.EditText.Web"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,6 +172,44 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_AA_floor"
+                    style="@style/MH.EditText.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_blockNumber" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_AA_blockNumber"
+                    style="@style/MH.EditText.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_blockNumber" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_AA_tags"
+                    style="@style/MH.EditText.Text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_tags" />
+
+            </android.support.design.widget.TextInputLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

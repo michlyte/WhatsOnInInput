@@ -2,6 +2,7 @@ package com.gghouse.woi.whatsonininput.screen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,13 +11,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
+import com.gghouse.woi.whatsonininput.model.AreaCategory;
+import com.gghouse.woi.whatsonininput.model.AreaName;
+import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
@@ -81,8 +89,34 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
         switch (item.getItemId()) {
             case R.id.action_add:
-                Intent addActivity = new Intent(this, AddActivity.class);
-                startActivity(addActivity);
+                boolean cancel = true;
+                City city = Session.getCity(this);
+                AreaCategory areaCategory = Session.getAreaCategory(this);
+                AreaName areaName = Session.getAreaName(this);
+                if (city == null || areaCategory == null || areaName == null) {
+                    cancel = true;
+                }
+
+                if (cancel) {
+                    new MaterialDialog.Builder(this)
+                            .title(R.string.prompt_perhatian)
+                            .content(R.string.prompt_pengaturan_prekondisi)
+                            .positiveColorRes(R.color.colorPrimary)
+                            .positiveText(R.string.prompt_setuju)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                                }
+                            })
+                            .show();
+                } else {
+                    Intent addActivity = new Intent(this, AddActivity.class);
+                    addActivity.putExtra(IntentParam.CITY, city);
+                    addActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
+                    addActivity.putExtra(IntentParam.AREA_NAME, areaName);
+                    startActivity(addActivity);
+                }
                 return true;
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);

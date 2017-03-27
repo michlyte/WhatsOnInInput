@@ -1,10 +1,12 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import java.io.Serializable;
+
 /**
  * Created by michael on 3/22/2017.
  */
 
-public class City {
+public class City implements Serializable {
     private Long cityId;
     private String cityName;
 

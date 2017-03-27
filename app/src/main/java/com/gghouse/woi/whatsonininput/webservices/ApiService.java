@@ -1,9 +1,11 @@
 package com.gghouse.woi.whatsonininput.webservices;
 
 import com.gghouse.woi.whatsonininput.webservices.model.Dummy;
+import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import java.util.List;
@@ -44,6 +46,9 @@ public interface ApiService {
      */
     @GET("/stores")
     Call<StoreListResponse> getStores();
+
+    @POST("/stores")
+    Call<StoreCreateResponse> createStore(@Body StoreCreateRequest storeCreateRequest);
 
     @GET("/cities")
     Call<CityListResponse> getCities();

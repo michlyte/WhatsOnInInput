@@ -45,6 +45,23 @@ public abstract class Session {
         }
     }
 
+    @Nullable
+    public static City getCity(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        if (prefser.contains(SP_CITY_ID) && prefser.contains(SP_CITIES)) {
+            Long cityId = prefser.get(SP_CITY_ID, Long.class, 1L);
+            City[] cities = prefser.get(SP_CITIES, City[].class, new City[]{});
+
+            for (City city : cities) {
+                if (city.getCityId() == cityId) {
+                    return city;
+                }
+            }
+        }
+        return null;
+    }
+
     public static void saveCityId(Context context, Long cityId) {
         Prefser prefser = new Prefser(context);
 
@@ -84,6 +101,23 @@ public abstract class Session {
         }
     }
 
+    @Nullable
+    public static AreaCategory getAreaCategory(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        if (prefser.contains(SP_AREA_CATEGORY_ID) && prefser.contains(SP_AREA_CATEGORIES)) {
+            Long areaCategoryId = prefser.get(SP_AREA_CATEGORY_ID, Long.class, 1L);
+            AreaCategory[] areaCategories = prefser.get(SP_AREA_CATEGORIES, AreaCategory[].class, new AreaCategory[]{});
+
+            for (AreaCategory areaCategory : areaCategories) {
+                if (areaCategory.getCategoryId() == areaCategoryId) {
+                    return areaCategory;
+                }
+            }
+        }
+        return null;
+    }
+
     public static void saveAreaCategoryId(Context context, Long areaCategoryId) {
         Prefser prefser = new Prefser(context);
 
@@ -120,6 +154,23 @@ public abstract class Session {
             Logger.log("[getAreaCategories]", "Prefser does not contain " + SP_AREA_CATEGORIES);
             return null;
         }
+    }
+
+    @Nullable
+    public static AreaName getAreaName(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        if (prefser.contains(SP_AREA_NAME_ID) && prefser.contains(SP_AREA_NAME)) {
+            Long areaNameId = prefser.get(SP_AREA_NAME_ID, Long.class, 1L);
+            AreaName[] areaNames = prefser.get(SP_AREA_NAME, AreaName[].class, new AreaName[]{});
+
+            for (AreaName areaName : areaNames) {
+                if (areaName.getAreaId() == areaNameId) {
+                    return areaName;
+                }
+            }
+        }
+        return null;
     }
 
     public static void saveAreaNameId(Context context, Long areaNameId) {

@@ -19,6 +19,16 @@
     <string name="prompt_setuju">Setuju</string>
     <string name="prompt_batal">Batal</string>
     <string name="prompt_tidak">Tidak</string>
+    <string name="prompt_perhatian">Perhatian</string>
+    <string name="prompt_pengaturan_prekondisi">Silahkan beralih ke pengaturan</string>
+    <string name="prompt_district">District</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_description">Description</string>
+    <string name="prompt_address">Address</string>
+    <string name="prompt_phoneNumber">Phone Number</string>
+    <string name="prompt_blockNumber">Block Number</string>
+    <string name="prompt_floor">Floor</string>
+    <string name="prompt_tags">Tags</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>

@@ -1,17 +1,18 @@
-package com.gghouse.woi.whatsonininput.model;
+package com.gghouse.woi.whatsonininput.webservices.request;
+
+import com.gghouse.woi.whatsonininput.model.AreaCategory;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 
 import java.util.List;
 
 /**
- * Created by michael on 3/16/2017.
+ * Created by michael on 3/27/2017.
  */
 
-public class Store {
-    private Long storeId;
+public class StoreCreateRequest {
     private AreaCategory category;
     private String district;
     private String name;
-    private String developer;
     private String description;
     private String address;
     private String phoneNo;
@@ -20,29 +21,8 @@ public class Store {
     private String floor;
     private String blockNumber;
     private List<StoreFileLocation> photos;
-    private Long areaId;
     private String stringTags;
-
-    /*
-     * Dev
-     */
-
-    private Integer drawable;
-
-    public Store(Long storeId, String name, String description, Integer drawable) {
-        this.storeId = storeId;
-        this.name = name;
-        this.description = description;
-        this.drawable = drawable;
-    }
-
-    public Long getStoreId() {
-        return storeId;
-    }
-
-    public void setStoreId(Long storeId) {
-        this.storeId = storeId;
-    }
+    private Long areaId;
 
     public AreaCategory getCategory() {
         return category;
@@ -66,14 +46,6 @@ public class Store {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDeveloper() {
-        return developer;
-    }
-
-    public void setDeveloper(String developer) {
-        this.developer = developer;
     }
 
     public String getDescription() {
@@ -140,14 +112,6 @@ public class Store {
         this.photos = photos;
     }
 
-    public Long getAreaId() {
-        return areaId;
-    }
-
-    public void setAreaId(Long areaId) {
-        this.areaId = areaId;
-    }
-
     public String getStringTags() {
         return stringTags;
     }
@@ -156,11 +120,11 @@ public class Store {
         this.stringTags = stringTags;
     }
 
-    public Integer getDrawable() {
-        return drawable;
+    public Long getAreaId() {
+        return areaId;
     }
 
-    public void setDrawable(Integer drawable) {
-        this.drawable = drawable;
+    public void setAreaId(Long areaId) {
+        this.areaId = areaId;
     }
 }

@@ -1,10 +1,12 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import java.io.Serializable;
+
 /**
  * Created by michael on 3/22/2017.
  */
 
-public class AreaCategory {
+public class AreaCategory implements Serializable {
     private Long categoryId;
     private String categoryName;
     private Integer type;

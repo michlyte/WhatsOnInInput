@@ -1,12 +1,13 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by michael on 3/22/2017.
  */
 
-public class AreaName {
+public class AreaName implements Serializable {
     private Long areaId;
     private City city;
     private AreaCategory category;
@@ -16,7 +17,7 @@ public class AreaName {
     private String developer;
     private String phoneNumber;
     private String website;
-    private List<Photo> photos;
+    private List<StoreFileLocation> photos;
 
     public Long getAreaId() {
         return areaId;
@@ -90,11 +91,11 @@ public class AreaName {
         this.website = website;
     }
 
-    public List<Photo> getPhotos() {
+    public List<StoreFileLocation> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<Photo> photos) {
+    public void setPhotos(List<StoreFileLocation> photos) {
         this.photos = photos;
     }
 
