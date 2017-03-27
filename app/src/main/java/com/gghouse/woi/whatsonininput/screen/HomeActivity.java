@@ -18,6 +18,7 @@ import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
+import com.gghouse.woi.whatsonininput.listener.OnLoadMoreListener;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private RecyclerView.LayoutManager mLayoutManager;
 
     private HomeOnClickListener mListener;
+    private OnLoadMoreListener mOnLoadMoreListener;
 
     private List<Store> mDataSet;
 
@@ -52,7 +54,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         mDataSet = new ArrayList<Store>();
 
