@@ -7,28 +7,31 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.adapter.PhotoAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 import com.mindorks.paracamera.Camera;
-import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -36,11 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddParaCameraActivity extends AppCompatActivity implements View.OnClickListener {
-
-    private int typeADD = 99;
-    private LinearLayout mLLTemplate;
-
+public class AddParaCameraActivity extends AppCompatActivity {
     /*
      * City, AreaCategory, AreaName
      */
@@ -48,13 +47,19 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
     private AreaCategory mAreaCategory;
     private AreaName mAreaName;
 
+    /*
+     * Photos
+     */
+    private Camera mCamera;
+    private Button mBAddphoto;
+    private RecyclerView mRecyclerView;
+    private PhotoAdapter mAdapter;
+    private LinearLayoutManager mLayoutManager;
+    private List<StoreFileLocation> mDataSet;
+
     private Button mBCity;
     private Button mBAreaCategory;
     private Button mBAreaName;
-
-    private ImageView mIVAddImage1;
-    private ImageView mIVAddImage2;
-    private ImageView mIVAddImage3;
 
     private EditText mETName;
     private EditText mETDistrict;
@@ -67,14 +72,10 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
     private EditText mETBlockNumber;
     private EditText mETTags;
 
-    private Camera mCamera;
-
-    private Integer imageViewId;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add);
+        setContentView(R.layout.activity_add_para_camera);
 
         Nammu.init(this);
 
@@ -103,6 +104,26 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
                 .setCompression(75)
                 .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;
                 .build(this);
+
+        mDataSet = new ArrayList<StoreFileLocation>();
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_AAPC_recyclerView);
+        mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new PhotoAdapter(this, mDataSet);
+        mRecyclerView.setAdapter(mAdapter);
+
+        mBAddphoto = (Button) findViewById(R.id.b_AAPC_addPhoto);
+        mBAddphoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Call the camera takePicture method to open the existing camera
+                try {
+                    mCamera.takePicture();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
         mBCity = (Button) findViewById(R.id.b_AA_city);
         mBAreaCategory = (Button) findViewById(R.id.b_AA_areaCategory);
@@ -136,14 +157,6 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
             }
         }
 
-        mLLTemplate = (LinearLayout) findViewById(R.id.ll_AA_template);
-        mIVAddImage1 = (ImageView) findViewById(R.id.iv_AA_addImage1);
-        mIVAddImage2 = (ImageView) findViewById(R.id.iv_AA_addImage2);
-        mIVAddImage3 = (ImageView) findViewById(R.id.iv_AA_addImage3);
-        mIVAddImage1.setOnClickListener(this);
-        mIVAddImage2.setOnClickListener(this);
-        mIVAddImage3.setOnClickListener(this);
-
         mETDistrict = (EditText) findViewById(R.id.et_AA_district);
         mETName = (EditText) findViewById(R.id.et_AA_name);
         mETDescription = (EditText) findViewById(R.id.et_AA_description);
@@ -154,8 +167,6 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
         mETFloor = (EditText) findViewById(R.id.et_AA_floor);
         mETBlockNumber = (EditText) findViewById(R.id.et_AA_blockNumber);
         mETTags = (EditText) findViewById(R.id.et_AA_tags);
-
-//        photos = new ArrayList<File>();
     }
 
     @Override
@@ -184,28 +195,10 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
         if (requestCode == Camera.REQUEST_TAKE_PHOTO) {
             Bitmap bitmap = mCamera.getCameraBitmap();
 
-            ImageView imageView = null;
-            switch (imageViewId) {
-                case R.id.iv_AA_addImage1:
-                    imageView = mIVAddImage1;
-                    break;
-                case R.id.iv_AA_addImage2:
-                    imageView = mIVAddImage2;
-                    break;
-                case R.id.iv_AA_addImage3:
-                    imageView = mIVAddImage3;
-                    break;
-            }
-
-            if (bitmap != null) {
-                Picasso.with(this)
-                        .load(mCamera.getCameraBitmapPath())
-                        .fit()
-                        .centerCrop()
-                        .into(imageView);
-            } else {
-                Toast.makeText(this.getApplicationContext(), "Picture not taken!", Toast.LENGTH_SHORT).show();
-            }
+            StoreFileLocation storeFileLocation = new StoreFileLocation();
+            storeFileLocation.setLocation(mCamera.getCameraBitmapPath());
+            mDataSet.add(storeFileLocation);
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -291,22 +284,5 @@ public class AddParaCameraActivity extends AppCompatActivity implements View.OnC
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_AA_addImage1:
-            case R.id.iv_AA_addImage2:
-            case R.id.iv_AA_addImage3:
-                imageViewId = v.getId();
-                // Call the camera takePicture method to open the existing camera
-                try {
-                    mCamera.takePicture();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
     }
 }
