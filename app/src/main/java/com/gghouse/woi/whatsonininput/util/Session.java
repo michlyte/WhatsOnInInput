@@ -160,13 +160,16 @@ public abstract class Session {
     public static AreaName getAreaName(Context context) {
         Prefser prefser = new Prefser(context);
 
-        if (prefser.contains(SP_AREA_NAME_ID) && prefser.contains(SP_AREA_NAME)) {
-            Long areaNameId = prefser.get(SP_AREA_NAME_ID, Long.class, 1L);
-            AreaName[] areaNames = prefser.get(SP_AREA_NAME, AreaName[].class, new AreaName[]{});
+        if (prefser.contains(SP_AREA_NAME_ID)) {
+            Long areaCategoryId = prefser.get(SP_AREA_CATEGORY_ID, Long.class, -1L);
+            if (areaCategoryId != -1L && prefser.contains(SP_AREA_NAME + areaCategoryId)) {
+                Long areaNameId = prefser.get(SP_AREA_NAME_ID, Long.class, 1L);
+                AreaName[] areaNames = prefser.get(SP_AREA_NAME + areaCategoryId, AreaName[].class, new AreaName[]{});
 
-            for (AreaName areaName : areaNames) {
-                if (areaName.getAreaId() == areaNameId) {
-                    return areaName;
+                for (AreaName areaName : areaNames) {
+                    if (areaName.getAreaId() == areaNameId) {
+                        return areaName;
+                    }
                 }
             }
         }

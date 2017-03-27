@@ -99,6 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (mListCity.size() > 0 && position < mListCity.size()) {
                     City city = mListCity.get(position);
                     mCityId = city.getCityId();
+                    Session.saveCityId(getApplicationContext(), mCityId);
                 }
             }
 
@@ -121,6 +122,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (mListAreaCategory.size() > 0 && position < mListAreaCategory.size()) {
                     AreaCategory areaCategory = mListAreaCategory.get(position);
                     mAreaCategoryId = areaCategory.getCategoryId();
+                    Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
 
                     AreaName[] areaNames = Session.getAreaNames(getApplicationContext(), mAreaCategoryId);
                     if (areaNames != null) {
@@ -153,6 +155,7 @@ public class SettingsActivity extends AppCompatActivity {
                 if (mListAreaName.size() > 0 && position < mListAreaName.size()) {
                     AreaName areaName = mListAreaName.get(position);
                     mAreaNameId = areaName.getAreaId();
+                    Session.saveAreaNameId(getApplicationContext(), mAreaNameId);
                 }
             }
 
@@ -208,9 +211,9 @@ public class SettingsActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     Session.saveIpAddress(getApplicationContext(), mETIPAddress.getText().toString());
-                                    Session.saveCityId(getApplicationContext(), mCityId);
-                                    Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
-                                    Session.saveAreaNameId(getApplicationContext(), mAreaNameId);
+//                                    Session.saveCityId(getApplicationContext(), mCityId);
+//                                    Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
+//                                    Session.saveAreaNameId(getApplicationContext(), mAreaNameId);
                                     finish();
                                 }
                             })
@@ -234,15 +237,15 @@ public class SettingsActivity extends AppCompatActivity {
         if (isChanged(Settings.IP_ADDRESS, Session.getIpAddress(this), mETIPAddress.getText().toString())) {
             isUpdated = true;
         }
-        if (isChanged(Settings.CITY, Session.getCityId(this), mCityId)) {
-            isUpdated = true;
-        }
-        if (isChanged(Settings.AREA_CATEGORY, Session.getAreaCategoryId(this), mAreaCategoryId)) {
-            isUpdated = true;
-        }
-        if (isChanged(Settings.AREA_NAME, Session.getAreaNameId(this), mAreaNameId)) {
-            isUpdated = true;
-        }
+//        if (isChanged(Settings.CITY, Session.getCityId(this), mCityId)) {
+//            isUpdated = true;
+//        }
+//        if (isChanged(Settings.AREA_CATEGORY, Session.getAreaCategoryId(this), mAreaCategoryId)) {
+//            isUpdated = true;
+//        }
+//        if (isChanged(Settings.AREA_NAME, Session.getAreaNameId(this), mAreaNameId)) {
+//            isUpdated = true;
+//        }
         return isUpdated;
     }
 
@@ -278,15 +281,15 @@ public class SettingsActivity extends AppCompatActivity {
                 case IP_ADDRESS:
                     type = "IP_ADDRESS";
                     break;
-                case CITY:
-                    type = "CITY";
-                    break;
-                case AREA_CATEGORY:
-                    type = "AREA_CATEGORY";
-                    break;
-                case AREA_NAME:
-                    type = "AREA_NAME";
-                    break;
+//                case CITY:
+//                    type = "CITY";
+//                    break;
+//                case AREA_CATEGORY:
+//                    type = "AREA_CATEGORY";
+//                    break;
+//                case AREA_NAME:
+//                    type = "AREA_NAME";
+//                    break;
             }
             Logger.log(type + " Before: " + beforeId + ", After: " + afterId);
             return true;
@@ -297,6 +300,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void setSpinnerSelection(Settings settings) {
         switch (settings) {
             case CITY:
+                Logger.log("Cities: " + mListCity.toString());
+                Logger.log("GetCity: " + Session.getCity(this));
                 mCityId = Session.getCityId(this);
                 int initCityPosition = 0;
                 for (int i = 0; i < mListCity.size(); i++) {
@@ -308,6 +313,8 @@ public class SettingsActivity extends AppCompatActivity {
                 mSCSCity.setSelection(initCityPosition);
                 break;
             case AREA_CATEGORY:
+                Logger.log("AreaCategories: " + mListAreaCategory.toString());
+                Logger.log("GetAreaCategory: " + Session.getAreaCategory(this));
                 mAreaCategoryId = Session.getAreaCategoryId(this);
                 int initAreaCategoryPosition = 0;
                 for (int i = 0; i < mListAreaCategory.size(); i++) {
@@ -319,6 +326,8 @@ public class SettingsActivity extends AppCompatActivity {
                 mSCSAreaCategory.setSelection(initAreaCategoryPosition);
                 break;
             case AREA_NAME:
+                Logger.log("AreaNames: " + mListAreaName.toString());
+                Logger.log("GetAreaName: " + Session.getAreaName(this));
                 mAreaNameId = Session.getAreaNameId(this);
                 int initAreaNamePosition = 0;
                 for (int i = 0; i < mListAreaName.size(); i++) {

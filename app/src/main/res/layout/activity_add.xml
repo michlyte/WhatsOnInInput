@@ -36,8 +36,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/outline"
-                    android:src="@android:drawable/ic_input_add"
-                    android:visibility="gone" />
+                    android:src="@android:drawable/ic_input_add" />
 
                 <ImageView
                     android:id="@+id/iv_AA_addImage2"
@@ -46,8 +45,7 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/outline"
-                    android:src="@android:drawable/ic_input_add"
-                    android:visibility="gone" />
+                    android:src="@android:drawable/ic_input_add" />
 
                 <ImageView
                     android:id="@+id/iv_AA_addImage3"
@@ -66,16 +64,19 @@
 
                 <Button
                     android:id="@+id/b_AA_city"
+                    style="@style/MH.Button.Profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/b_AA_areaCategory"
+                    style="@style/MH.Button.Profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <Button
                     android:id="@+id/b_AA_areaName"
+                    style="@style/MH.Button.Profile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
             </LinearLayout>

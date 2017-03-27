@@ -38,6 +38,13 @@
         <item name="android:inputType">textEmailAddress</item>
     </style>
 
+    <style name="MH.Button" />
+
+    <style name="MH.Button.Profile">
+        <item name="android:minHeight">1dp</item>
+        <item name="android:minWidth">1dp</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

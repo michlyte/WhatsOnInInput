@@ -21,12 +21,14 @@ import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
-import com.gghouse.woi.whatsonininput.model.Dummy;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,10 +39,12 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private HomeAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private HomeOnClickListener mListener;
+
+    private List<Store> mDataSet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,8 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ws_getStores();
+
+        mDataSet = new ArrayList<Store>();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_CH_swipeRefreshLayout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -72,8 +77,10 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new HomeAdapter(this, Dummy.itemsStore, mListener, mRecyclerView);
+        mAdapter = new HomeAdapter(this, mDataSet, mListener, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
+
+        ws_getStores();
     }
 
     @Override
@@ -89,10 +96,12 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
         switch (item.getItemId()) {
             case R.id.action_add:
-                boolean cancel = true;
+                boolean cancel = false;
+
                 City city = Session.getCity(this);
                 AreaCategory areaCategory = Session.getAreaCategory(this);
                 AreaName areaName = Session.getAreaName(this);
+                
                 if (city == null || areaCategory == null || areaName == null) {
                     cancel = true;
                 }
@@ -111,7 +120,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                             })
                             .show();
                 } else {
-                    Intent addActivity = new Intent(this, AddActivity.class);
+                    Intent addActivity = new Intent(this, AddParaCameraActivity.class);
                     addActivity.putExtra(IntentParam.CITY, city);
                     addActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
                     addActivity.putExtra(IntentParam.AREA_NAME, areaName);
@@ -137,11 +146,14 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         callGetStores.enqueue(new Callback<StoreListResponse>() {
             @Override
             public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
-                StoreListResponse responseGetStores = response.body();
-                if (responseGetStores.getCode() == Config.CODE_200) {
-
+                StoreListResponse storeListResponse = response.body();
+                if (storeListResponse.getCode() == Config.CODE_200) {
+                    mRecyclerView.setAdapter(null);
+                    mDataSet = storeListResponse.getData();
+                    mAdapter.setData(mDataSet);
+                    mRecyclerView.setAdapter(mAdapter);
                 } else {
-                    Logger.log("Failed code: " + responseGetStores.getCode());
+                    Logger.log("Failed code: " + storeListResponse.getCode());
                 }
             }
 
