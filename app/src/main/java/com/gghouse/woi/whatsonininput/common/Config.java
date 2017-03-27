@@ -19,4 +19,6 @@ public interface Config {
     // Logger
     String ON_RESPONSE = "onResponse";
     String ON_FAILURE = "onFailure";
+
+    int SIZE_PER_PAGE = 10;
 }

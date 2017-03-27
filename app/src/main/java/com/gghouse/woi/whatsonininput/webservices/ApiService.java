@@ -45,7 +45,7 @@ public interface ApiService {
      * PROD
      */
     @GET("/stores")
-    Call<StoreListResponse> getStores();
+    Call<StoreListResponse> getStores(@Query("page") int page, @Query("size") int size);
 
     @POST("/stores")
     Call<StoreCreateResponse> createStore(@Body StoreCreateRequest storeCreateRequest);

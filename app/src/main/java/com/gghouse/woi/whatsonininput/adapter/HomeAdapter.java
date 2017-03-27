@@ -31,7 +31,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private OnLoadMoreListener mOnLoadMoreListener;
 
     private boolean isLoading;
-    private int visibleThreshold = 5;
+    private int visibleThreshold = Config.SIZE_PER_PAGE;
     private int lastVisibleItem, totalItemCount;
 
     private Context mContext;
@@ -149,6 +149,10 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void setOnLoadMoreListener(OnLoadMoreListener mOnLoadMoreListener) {
         this.mOnLoadMoreListener = mOnLoadMoreListener;
+    }
+
+    public void removeOnLoadMoreListener() {
+        this.mOnLoadMoreListener = null;
     }
 
     public void add(Store store) {

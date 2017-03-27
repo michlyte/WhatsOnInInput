@@ -2,6 +2,7 @@ package com.gghouse.woi.whatsonininput.screen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.gghouse.woi.whatsonininput.listener.OnLoadMoreListener;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
+import com.gghouse.woi.whatsonininput.model.Pagination;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
@@ -42,8 +44,12 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private RecyclerView mRecyclerView;
     private HomeAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-
     private HomeOnClickListener mListener;
+
+    /*
+     * Pagination
+     */
+    private Integer mPage;
     private OnLoadMoreListener mOnLoadMoreListener;
 
     private List<Store> mDataSet;
@@ -61,9 +67,24 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                mSwipeRefreshLayout.setRefreshing(false);
+                ws_getStores(HomeMode.REFRESH);
             }
         });
+
+        mPage = 0;
+        mOnLoadMoreListener = new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.add(null);
+                        mAdapter.notifyItemInserted(mAdapter.getItemCount() - 1);
+                    }
+                });
+                ws_getStores(HomeMode.LOAD_MORE);
+            }
+        };
 
         mListener = this;
 
@@ -81,7 +102,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         mAdapter = new HomeAdapter(this, mDataSet, mListener, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
 
-        ws_getStores();
+        ws_getStores(HomeMode.REFRESH);
     }
 
     @Override
@@ -102,7 +123,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 City city = Session.getCity(this);
                 AreaCategory areaCategory = Session.getAreaCategory(this);
                 AreaName areaName = Session.getAreaName(this);
-                
+
                 if (city == null || areaCategory == null || areaName == null) {
                     cancel = true;
                 }
@@ -142,26 +163,85 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         Logger.log(store.getName());
     }
 
-    private void ws_getStores() {
-        Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores();
-        callGetStores.enqueue(new Callback<StoreListResponse>() {
-            @Override
-            public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
-                StoreListResponse storeListResponse = response.body();
-                if (storeListResponse.getCode() == Config.CODE_200) {
-                    mRecyclerView.setAdapter(null);
-                    mDataSet = storeListResponse.getData();
-                    mAdapter.setData(mDataSet);
-                    mRecyclerView.setAdapter(mAdapter);
-                } else {
-                    Logger.log("Failed code: " + storeListResponse.getCode());
-                }
-            }
+    private void ws_getStores(HomeMode homeMode) {
+        switch (homeMode) {
+            case REFRESH:
+                Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE);
+                callGetStores.enqueue(new Callback<StoreListResponse>() {
+                    @Override
+                    public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
+                        StoreListResponse storeListResponse = response.body();
+                        if (storeListResponse.getCode() == Config.CODE_200) {
+                            manageOnLoadMoreListener(storeListResponse.getPagination());
+                            mRecyclerView.setAdapter(null);
+                            mDataSet = storeListResponse.getData();
+                            mAdapter.setData(mDataSet);
+                            mRecyclerView.setAdapter(mAdapter);
+                        } else {
+                            Logger.log("Failed code: " + storeListResponse.getCode());
+                        }
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
 
-            @Override
-            public void onFailure(Call<StoreListResponse> call, Throwable t) {
-                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
-            }
-        });
+                    @Override
+                    public void onFailure(Call<StoreListResponse> call, Throwable t) {
+                        Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+                break;
+            case LOAD_MORE:
+                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE);
+                callStoreListLoadMore.enqueue(new Callback<StoreListResponse>() {
+                    @Override
+                    public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
+                        //Remove loading item
+                        mAdapter.remove(mAdapter.getItemCount() - 1);
+                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+
+                        StoreListResponse storeListResponse = response.body();
+                        switch (storeListResponse.getCode()) {
+                            case Config.CODE_200:
+                                manageOnLoadMoreListener(storeListResponse.getPagination());
+                                List<Store> newDataSet = storeListResponse.getData();
+                                mDataSet.addAll(newDataSet);
+                                break;
+                            default:
+                                Logger.log("Status" + "[" + storeListResponse.getCode() + "]: " + storeListResponse.getStatus());
+                                break;
+                        }
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(Call<StoreListResponse> call, Throwable t) {
+                        Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+
+                        //Remove loading item
+                        mAdapter.remove(mAdapter.getItemCount() - 1);
+                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+                        mAdapter.setLoaded();
+                    }
+                });
+                break;
+        }
+    }
+
+    private void manageOnLoadMoreListener(Pagination pagination) {
+        /*
+         * Controlling load more
+         */
+        mPage = pagination.getNumber();
+        if (pagination.isLast()) {
+            mAdapter.removeOnLoadMoreListener();
+        } else {
+            mAdapter.setLoaded();
+            mAdapter.setOnLoadMoreListener(mOnLoadMoreListener);
+        }
+    }
+
+    private enum HomeMode {
+        REFRESH,
+        LOAD_MORE;
     }
 }
