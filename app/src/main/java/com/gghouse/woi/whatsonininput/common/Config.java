@@ -5,10 +5,9 @@ package com.gghouse.woi.whatsonininput.common;
  */
 
 public interface Config {
-    boolean DUMMY_DEV = false;
+    RunMode runMode = RunMode.DUMMY;
     boolean LOG_ENABLE = true;
 
-//    String BASE_URL = "http://jsonplaceholder.typicode.com";
     String BASE_URL = "http://10.0.2.2:8093";
     int CONNECT_TIMEOUT = 60;
     int READ_TIMEOUT = 60;

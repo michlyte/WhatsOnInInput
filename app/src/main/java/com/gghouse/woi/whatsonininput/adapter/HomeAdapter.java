@@ -107,18 +107,21 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             final Store store = mDataSet.get(position);
             homeViewHolder.tvTitle.setText(store.getName());
             homeViewHolder.tvSubtitle.setText(store.getDescription());
-            if (Config.DUMMY_DEV) {
-                Picasso.with(mContext)
-                        .load(store.getDrawable())
-                        .fit()
-                        .centerInside()
-                        .into(homeViewHolder.ivImage);
-            } else {
-                Picasso.with(mContext)
-                        .load(R.mipmap.ic_launcher)
-                        .fit()
-                        .centerInside()
-                        .into(homeViewHolder.ivImage);
+            switch (Config.runMode) {
+                case DUMMY:
+                    Picasso.with(mContext)
+                            .load(R.mipmap.ic_launcher)
+                            .fit()
+                            .centerInside()
+                            .into(homeViewHolder.ivImage);
+                    break;
+                default:
+                    Picasso.with(mContext)
+                            .load(store.getDrawable())
+                            .fit()
+                            .centerInside()
+                            .into(homeViewHolder.ivImage);
+                    break;
             }
 
             homeViewHolder.mView.setOnClickListener(new View.OnClickListener() {

@@ -14,6 +14,7 @@ import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.listener.OnLoadMoreListener;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -43,6 +44,7 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ImageView ivImage;
         public TextView tvTitle;
         public TextView tvSubtitle;
+        public ProgressBar pbProgressBar;
 
         public UploadViewHolder(View v) {
             super(v);
@@ -50,6 +52,13 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ivImage = (ImageView) v.findViewById(R.id.iv_AUI_image);
             tvTitle = (TextView) v.findViewById(R.id.tv_AUI_title);
             tvSubtitle = (TextView) v.findViewById(R.id.tv_AUI_subtitle);
+            pbProgressBar = (ProgressBar) v.findViewById(R.id.pb_AUI_progressBar);
+
+            DoubleBounce doubleBounce = new DoubleBounce();
+            doubleBounce.setBounds(0, 0, 100, 100);
+            pbProgressBar.setIndeterminateDrawable(doubleBounce);
+
+            pbProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -105,11 +114,20 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             final StoreFileLocation storeFileLocation = mDataSet.get(position);
             uploadViewHolder.tvTitle.setText(storeFileLocation.getFileName());
             uploadViewHolder.tvSubtitle.setText(storeFileLocation.getLocation());
-            Picasso.with(mContext)
-                    .load(new File(storeFileLocation.getLocation()))
-                    .fit()
-                    .centerInside()
-                    .into(uploadViewHolder.ivImage);
+            File file = new File(storeFileLocation.getLocation());
+            if (file.exists()) {
+                Picasso.with(mContext)
+                        .load(file)
+                        .fit()
+                        .centerInside()
+                        .into(uploadViewHolder.ivImage);
+            } else {
+                Picasso.with(mContext)
+                        .load(R.mipmap.ic_launcher)
+                        .fit()
+                        .centerInside()
+                        .into(uploadViewHolder.ivImage);
+            }
         } else if (holder instanceof LoadingViewHolder) {
             LoadingViewHolder loadingViewHolder = (LoadingViewHolder) holder;
             loadingViewHolder.progressBar.setIndeterminate(true);

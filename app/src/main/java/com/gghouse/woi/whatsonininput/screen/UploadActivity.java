@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
+import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Session;
 
@@ -53,6 +54,19 @@ public class UploadActivity extends AppCompatActivity {
         // specify an adapter (see also next example)
         mAdapter = new UploadAdapter(this, mDataSet, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
+
+        switch (Config.runMode) {
+            case DUMMY:
+                for (int i = 0; i < 3; i++) {
+                    StoreFileLocation storeFileLocation = new StoreFileLocation();
+                    storeFileLocation.setFileName("Dummy " + i);
+                    storeFileLocation.setLocation("Location dummy " + i);
+
+                    mDataSet.add(storeFileLocation);
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;
+        }
     }
 
     @Override
