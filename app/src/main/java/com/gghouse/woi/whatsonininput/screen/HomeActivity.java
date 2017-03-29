@@ -28,6 +28,7 @@ import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreGetResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import java.util.ArrayList;
@@ -142,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                             })
                             .show();
                 } else {
-                    Intent addActivity = new Intent(this, AddParaCameraActivity.class);
+                    Intent addActivity = new Intent(this, AddActivity.class);
                     addActivity.putExtra(IntentParam.CITY, city);
                     addActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
                     addActivity.putExtra(IntentParam.AREA_NAME, areaName);
@@ -160,7 +161,25 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
     @Override
     public void onClick(Store store) {
-        Logger.log(store.getName());
+        Call<StoreGetResponse> callStoreGet = ApiClient.getClient().getStore(store.getStoreId());
+        callStoreGet.enqueue(new Callback<StoreGetResponse>() {
+            @Override
+            public void onResponse(Call<StoreGetResponse> call, Response<StoreGetResponse> response) {
+                StoreGetResponse storeGetResponse = response.body();
+                if (storeGetResponse.getCode() == Config.CODE_200) {
+                    Intent iEditActivity = new Intent(getApplicationContext(), EditActivity.class);
+                    iEditActivity.putExtra(IntentParam.STORE, storeGetResponse.getData());
+                    startActivity(iEditActivity);
+                } else {
+                    Logger.log("Failed code: " + storeGetResponse.getCode());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<StoreGetResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
+            }
+        });
     }
 
     private void ws_getStores(HomeMode homeMode) {

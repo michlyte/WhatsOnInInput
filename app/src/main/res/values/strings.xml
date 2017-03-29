@@ -30,10 +30,12 @@
     <string name="prompt_blockNumber">Block Number</string>
     <string name="prompt_floor">Floor</string>
     <string name="prompt_tags">Tags</string>
+    <string name="prompt_init_camera">Field name harus diisi terlebih dahulu</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>
     <string name="action_add">Add</string>
+    <string name="action_edit">Edit</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>

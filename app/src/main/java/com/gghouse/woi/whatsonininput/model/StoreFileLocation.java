@@ -1,10 +1,12 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import java.io.Serializable;
+
 /**
  * Created by michael on 3/16/2017.
  */
 
-public class StoreFileLocation {
+public class StoreFileLocation implements Serializable {
     private Long storeFileId;
     private String location;
     private String fileName;

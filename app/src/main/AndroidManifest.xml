@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".screen.AddActivity" />
-        <activity android:name=".screen.AddParaCameraActivity" />
+        <activity android:name=".screen.EditActivity" />
         <activity
             android:name=".screen.HomeActivity"
             android:label="@string/app_short_name"

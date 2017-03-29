@@ -1,12 +1,13 @@
 package com.gghouse.woi.whatsonininput.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by michael on 3/16/2017.
  */
 
-public class Store {
+public class Store implements Serializable {
     private Long storeId;
     private AreaCategory category;
     private String district;

@@ -8,4 +8,5 @@ public interface IntentParam {
     String CITY = "CITY";
     String AREA_CATEGORY = "AREA_CATEGORY";
     String AREA_NAME = "AREA_NAME";
+    String STORE = "STORE";
 }

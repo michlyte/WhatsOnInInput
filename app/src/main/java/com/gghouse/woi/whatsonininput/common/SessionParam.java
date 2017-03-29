@@ -18,4 +18,7 @@ public interface SessionParam {
     String SP_AREA_NAME = "SP_AREA_NAME_"; // follow by area category id (SP_AREA_NAME_1)
     String SP_AREA_NAME_ID = "SP_AREA_NAME_ID";
     long INIT_VALUE_AREA_NAME_ID = 1L;
+
+//    String SP_PHOTOS = "SP_PHOTOS";
+    String SP_STORE_FILE_LOCATION = "SP_STORE_FILE_LOCATION";
 }

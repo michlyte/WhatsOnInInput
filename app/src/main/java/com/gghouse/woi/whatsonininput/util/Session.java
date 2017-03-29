@@ -8,8 +8,13 @@ import com.gghouse.woi.whatsonininput.common.SessionParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_CATEGORIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_CATEGORY_ID;
@@ -17,6 +22,7 @@ import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME_ID;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITY_ID;
+import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_STORE_FILE_LOCATION;
 
 /**
  * Created by michael on 3/22/2017.
@@ -232,5 +238,31 @@ public abstract class Session {
                 }
             }
         }
+    }
+
+    public static void addPhotos(Context context, StoreFileLocation photoPath) {
+        Prefser prefser = new Prefser(context);
+
+        StoreFileLocation[] photoPathArr = getPhotos(context);
+        if (photoPathArr.length > 0) {
+            List<StoreFileLocation> photoPathList = new ArrayList<StoreFileLocation>();
+            photoPathList.addAll(Arrays.asList(photoPathArr));
+            photoPathList.add(photoPath);
+            StoreFileLocation[] photoPathArrUpdated = new StoreFileLocation[photoPathList.size()];
+            photoPathList.toArray(photoPathArrUpdated);
+            prefser.put(SP_STORE_FILE_LOCATION, photoPathArrUpdated);
+        } else {
+            prefser.put(SP_STORE_FILE_LOCATION, new StoreFileLocation[]{photoPath});
+        }
+    }
+
+    public static StoreFileLocation[] getPhotos(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        StoreFileLocation[] photoPath = new StoreFileLocation[]{};
+        if (prefser.contains(SP_STORE_FILE_LOCATION)) {
+            photoPath = prefser.get(SP_STORE_FILE_LOCATION, StoreFileLocation[].class, new StoreFileLocation[]{});
+        }
+        return photoPath;
     }
 }

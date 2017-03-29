@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.gghouse.woi.whatsonininput.R;
-import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -20,12 +20,12 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
     private Context mContext;
-    private List<StoreFileLocation> mDataset;
+    private List<String> mDataset;
 
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView mImageView;
-        public StoreFileLocation mItem;
+        public String mItem;
 
         public PhotoViewHolder(View v) {
             super(v);
@@ -34,7 +34,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
     }
 
-    public PhotoAdapter(Context context, List<StoreFileLocation> myDataset) {
+    public PhotoAdapter(Context context, List<String> myDataset) {
         mContext = context;
         mDataset = myDataset;
     }
@@ -51,16 +51,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @Override
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         holder.mItem = mDataset.get(position);
-//        Picasso.with(mContext)
-//                .load(holder.mItem.getLocation())
-//                .fit()
-//                .centerCrop()
-//                .into(holder.mImageView);
         Picasso.with(mContext)
-                .load(R.mipmap.ic_launcher)
+                .load(new File(holder.mItem))
                 .fit()
                 .centerCrop()
                 .into(holder.mImageView);
+//        Picasso.with(mContext)
+//                .load(R.mipmap.ic_launcher)
+//                .fit()
+//                .centerCrop()
+//                .into(holder.mImageView);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListRespo
 import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreGetResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
 import java.util.List;
@@ -46,6 +47,9 @@ public interface ApiService {
      */
     @GET("/stores")
     Call<StoreListResponse> getStores(@Query("page") int page, @Query("size") int size);
+
+    @GET("/stores/{id}")
+    Call<StoreGetResponse> getStore(@Path("id") long id);
 
     @POST("/stores")
     Call<StoreCreateResponse> createStore(@Body StoreCreateRequest storeCreateRequest);
