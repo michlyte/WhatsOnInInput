@@ -150,6 +150,10 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     startActivity(addActivity);
                 }
                 return true;
+            case R.id.action_upload:
+                Intent uploadActivity = new Intent(this, UploadActivity.class);
+                startActivity(uploadActivity);
+                break;
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);
                 startActivity(settingsActivity);

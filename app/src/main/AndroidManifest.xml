@@ -14,6 +14,10 @@
         <activity android:name=".screen.AddActivity" />
         <activity android:name=".screen.EditActivity" />
         <activity
+            android:name=".screen.UploadActivity"
+            android:label="@string/title_activity_upload"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".screen.HomeActivity"
             android:label="@string/app_short_name"
             android:theme="@style/AppTheme.NoActionBar">
