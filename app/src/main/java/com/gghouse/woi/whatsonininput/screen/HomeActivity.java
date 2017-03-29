@@ -34,6 +34,7 @@ import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 import java.util.ArrayList;
 import java.util.List;
 
+import mehdi.sakout.dynamicbox.DynamicBox;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,6 +53,10 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
      */
     private Integer mPage;
     private OnLoadMoreListener mOnLoadMoreListener;
+    /*
+     * Loading
+     */
+    private DynamicBox mDynamicBox;
 
     private List<Store> mDataSet;
 
@@ -102,6 +107,8 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         // specify an adapter (see also next example)
         mAdapter = new HomeAdapter(this, mDataSet, mListener, mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
+
+        mDynamicBox = new DynamicBox(this, mRecyclerView);
 
         ws_getStores(HomeMode.REFRESH);
     }
@@ -189,6 +196,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private void ws_getStores(HomeMode homeMode) {
         switch (homeMode) {
             case REFRESH:
+                mDynamicBox.showLoadingLayout();
                 Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE);
                 callGetStores.enqueue(new Callback<StoreListResponse>() {
                     @Override
@@ -204,12 +212,14 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                             Logger.log("Failed code: " + storeListResponse.getCode());
                         }
                         mSwipeRefreshLayout.setRefreshing(false);
+                        mDynamicBox.hideAll();
                     }
 
                     @Override
                     public void onFailure(Call<StoreListResponse> call, Throwable t) {
                         Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
                         mSwipeRefreshLayout.setRefreshing(false);
+                        mDynamicBox.hideAll();
                     }
                 });
                 break;

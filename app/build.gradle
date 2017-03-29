@@ -41,5 +41,7 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'com.afollestad.material-dialogs:core:0.9.3.0'
     compile 'com.mindorks:paracamera:0.2.2'
+    compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    compile 'com.github.medyo:dynamicbox:1.2@aar'
     testCompile 'junit:junit:4.12'
 }
