@@ -1,5 +1,6 @@
 package com.gghouse.woi.whatsonininput.screen;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -125,6 +126,7 @@ public class AddActivity extends AddEditActivity {
             public void onResponse(Call<StoreCreateResponse> call, Response<StoreCreateResponse> response) {
                 StoreCreateResponse storeCreateResponse = response.body();
                 if (storeCreateResponse.getCode() == Config.CODE_200) {
+                    setResult(Activity.RESULT_OK);
                     finish();
                 } else {
                     Logger.log("Failed code: " + storeCreateResponse.getCode());
@@ -136,5 +138,11 @@ public class AddActivity extends AddEditActivity {
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        finish();
     }
 }

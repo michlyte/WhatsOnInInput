@@ -1,5 +1,6 @@
 package com.gghouse.woi.whatsonininput.screen;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
+
+    static final int ADD_RESPONSE = 99;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -159,7 +162,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     addActivity.putExtra(IntentParam.CITY, city);
                     addActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
                     addActivity.putExtra(IntentParam.AREA_NAME, areaName);
-                    startActivity(addActivity);
+                    startActivityForResult(addActivity, ADD_RESPONSE);
                 }
                 return true;
             case R.id.action_upload:
@@ -196,6 +199,24 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ADD_RESPONSE:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        ws_getStores(HomeMode.REFRESH);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     private void ws_getStores(HomeMode homeMode) {

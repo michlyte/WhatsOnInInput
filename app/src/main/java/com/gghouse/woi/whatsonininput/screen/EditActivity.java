@@ -31,6 +31,8 @@ public class EditActivity extends AddEditActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mBAddphoto.setVisibility(View.GONE);
+
         Intent intent = getIntent();
         if (intent == null) {
             Logger.log("Store is null.");
