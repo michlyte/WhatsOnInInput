@@ -17,7 +17,7 @@ public class GenericResponse {
     }
 
     public Integer getCode() {
-        return code;
+        return (code != null ? code : 400);
     }
 
     public void setCode(Integer code) {

@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -43,6 +44,7 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
     static final int ADD_RESPONSE = 99;
+    static final String sort = "storeId,desc";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -223,11 +225,12 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         switch (homeMode) {
             case REFRESH:
                 mDynamicBox.showLoadingLayout();
-                Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE);
+                Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE, sort);
                 callGetStores.enqueue(new Callback<StoreListResponse>() {
                     @Override
                     public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
                         StoreListResponse storeListResponse = response.body();
+                        System.out.println(response.body());
                         if (storeListResponse.getCode() == Config.CODE_200) {
                             manageOnLoadMoreListener(storeListResponse.getPagination());
                             mRecyclerView.setAdapter(null);
@@ -250,7 +253,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 });
                 break;
             case LOAD_MORE:
-                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE);
+                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE, sort);
                 callStoreListLoadMore.enqueue(new Callback<StoreListResponse>() {
                     @Override
                     public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {

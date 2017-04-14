@@ -49,7 +49,7 @@ public interface ApiService {
      * PROD
      */
     @GET("/stores")
-    Call<StoreListResponse> getStores(@Query("page") int page, @Query("size") int size);
+    Call<StoreListResponse> getStores(@Query("page") int page, @Query("size") int size, @Query("sort") String sort);
 
     @GET("/stores/{id}")
     Call<StoreGetResponse> getStore(@Path("id") long id);
