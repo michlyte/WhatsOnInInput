@@ -8,16 +8,25 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by michael on 3/29/2017.
  */
 
 public class EditActivity extends AddEditActivity {
+    private Store mStore;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,25 +35,25 @@ public class EditActivity extends AddEditActivity {
         if (intent == null) {
             Logger.log("Store is null.");
         } else {
-            Store store = (Store) intent.getSerializableExtra(IntentParam.STORE);
-            for (StoreFileLocation storeFileLocation : store.getPhotos()) {
+            mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
+            for (StoreFileLocation storeFileLocation : mStore.getPhotos()) {
                 mDataSet.add(storeFileLocation.getLocation());
             }
             mAdapter.notifyDataSetChanged();
 
-            mBAreaCategory.setText(store.getCategory().getCategoryName());
+            mBAreaCategory.setText(mStore.getCategory().getCategoryName());
             mBAreaCategory.setVisibility(View.VISIBLE);
 
-            mETName.setText(store.getName());
-            mETDistrict.setText(store.getDistrict());
-            mETDescription.setText(store.getDescription());
-            mETAddress.setText(store.getAddress());
-            mETPhoneNumber.setText(store.getPhoneNo());
-            mETWeb.setText(store.getWeb());
-            mETEmail.setText(store.getEmail());
-            mETFloor.setText(store.getFloor());
-            mETBlockNumber.setText(store.getBlockNumber());
-            mETTags.setText(store.getStringTags());
+            mETName.setText(mStore.getName());
+            mETDistrict.setText(mStore.getDistrict());
+            mETDescription.setText(mStore.getDescription());
+            mETAddress.setText(mStore.getAddress());
+            mETPhoneNumber.setText(mStore.getPhoneNo());
+            mETWeb.setText(mStore.getWeb());
+            mETEmail.setText(mStore.getEmail());
+            mETFloor.setText(mStore.getFloor());
+            mETBlockNumber.setText(mStore.getBlockNumber());
+            mETTags.setText(mStore.getStringTags());
         }
     }
 
@@ -68,7 +77,41 @@ public class EditActivity extends AddEditActivity {
     }
 
     @Override
-    protected void onSuccess(String district, String name, String description, String address, String phoneNumber, String web, String email, String floor, String blockNumber, String tags) {
+    protected void onSuccess(String district, String name, String description,
+                             String address, String phoneNumber, String web, String email,
+                             String floor, String blockNumber, String tags) {
 
+        mStore.setDistrict(district);
+        mStore.setName(name);
+        mStore.setDescription(description);
+        mStore.setAddress(address);
+        mStore.setPhoneNo(phoneNumber);
+        mStore.setWeb(web);
+        mStore.setEmail(email);
+        mStore.setFloor(floor);
+        mStore.setBlockNumber(blockNumber);
+        mStore.setStringTags(tags);
+
+        Call<StoreEditResponse> callStoreListLoadMore = ApiClient.getClient().editStore(mStore);
+        callStoreListLoadMore.enqueue(new Callback<StoreEditResponse>() {
+            @Override
+            public void onResponse(Call<StoreEditResponse> call, Response<StoreEditResponse> response) {
+                StoreEditResponse storeListResponse = response.body();
+                switch (storeListResponse.getCode()) {
+                    case Config.CODE_200:
+                        finish();
+                        break;
+                    default:
+                        Logger.log("Status" + "[" + storeListResponse.getCode() + "]: " + storeListResponse.getStatus());
+                        break;
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<StoreEditResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+            }
+        });
     }
 }

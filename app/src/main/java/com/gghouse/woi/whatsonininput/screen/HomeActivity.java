@@ -67,6 +67,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        /*
+         * Session Manager to update ip address.
+         */
+        ApiClient.generateClientWithNewIP(Session.getIpAddress(this));
+
         mDataSet = new ArrayList<Store>();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.srl_CH_swipeRefreshLayout);

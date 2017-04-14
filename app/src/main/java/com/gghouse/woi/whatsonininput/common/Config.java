@@ -5,7 +5,7 @@ package com.gghouse.woi.whatsonininput.common;
  */
 
 public interface Config {
-    RunMode runMode = RunMode.DUMMY;
+    RunMode runMode = RunMode.DEVELOPMENT;
     boolean LOG_ENABLE = true;
 
     String BASE_URL = "http://10.0.2.2:8093";

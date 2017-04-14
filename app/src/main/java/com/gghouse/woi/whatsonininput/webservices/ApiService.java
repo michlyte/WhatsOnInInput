@@ -1,11 +1,13 @@
 package com.gghouse.woi.whatsonininput.webservices;
 
+import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.webservices.model.Dummy;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreGetResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 
@@ -17,6 +19,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -53,6 +56,9 @@ public interface ApiService {
 
     @POST("/stores")
     Call<StoreCreateResponse> createStore(@Body StoreCreateRequest storeCreateRequest);
+
+    @PUT("/stores")
+    Call<StoreEditResponse> editStore(@Body Store store);
 
     @GET("/cities")
     Call<CityListResponse> getCities();

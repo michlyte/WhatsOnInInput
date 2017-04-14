@@ -81,6 +81,38 @@ public class UploadActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_send:
+//                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE);
+//                callStoreListLoadMore.enqueue(new Callback<StoreListResponse>() {
+//                    @Override
+//                    public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
+//                        //Remove loading item
+//                        mAdapter.remove(mAdapter.getItemCount() - 1);
+//                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+//
+//                        StoreListResponse storeListResponse = response.body();
+//                        switch (storeListResponse.getCode()) {
+//                            case Config.CODE_200:
+//                                manageOnLoadMoreListener(storeListResponse.getPagination());
+//                                List<Store> newDataSet = storeListResponse.getData();
+//                                mDataSet.addAll(newDataSet);
+//                                break;
+//                            default:
+//                                Logger.log("Status" + "[" + storeListResponse.getCode() + "]: " + storeListResponse.getStatus());
+//                                break;
+//                        }
+//                        mAdapter.notifyDataSetChanged();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<StoreListResponse> call, Throwable t) {
+//                        Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+//
+//                        //Remove loading item
+//                        mAdapter.remove(mAdapter.getItemCount() - 1);
+//                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
+//                        mAdapter.setLoaded();
+//                    }
+//                });
                 return true;
         }
         return super.onOptionsItemSelected(item);

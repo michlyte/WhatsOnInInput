@@ -117,7 +117,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     break;
                 default:
                     Picasso.with(mContext)
-                            .load(store.getDrawable())
+                            .load((store.getDrawable() != null ? store.getDrawable() : R.drawable.no_image))
                             .fit()
                             .centerInside()
                             .into(homeViewHolder.ivImage);

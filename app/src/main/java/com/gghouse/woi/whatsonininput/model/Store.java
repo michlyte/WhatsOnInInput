@@ -8,21 +8,21 @@ import java.util.List;
  */
 
 public class Store implements Serializable {
-    private Long storeId;
-    private AreaCategory category;
-    private String district;
-    private String name;
-    private String developer;
-    private String description;
-    private String address;
-    private String phoneNo;
-    private String web;
-    private String email;
-    private String floor;
-    private String blockNumber;
-    private List<StoreFileLocation> photos;
-    private Long areaId;
-    private String stringTags;
+    protected Long storeId;
+    protected AreaCategory category;
+    protected String district;
+    protected String name;
+    protected String developer;
+    protected String description;
+    protected String address;
+    protected String phoneNo;
+    protected String web;
+    protected String email;
+    protected String floor;
+    protected String blockNumber;
+    protected List<StoreFileLocation> photos;
+    protected Long areaId;
+    protected String stringTags;
 
     /*
      * Dev
@@ -34,6 +34,25 @@ public class Store implements Serializable {
         this.storeId = storeId;
         this.name = name;
         this.description = description;
+        this.drawable = drawable;
+    }
+
+    public Store(Long storeId, AreaCategory category, String district, String name, String developer, String description, String address, String phoneNo, String web, String email, String floor, String blockNumber, List<StoreFileLocation> photos, Long areaId, String stringTags, Integer drawable) {
+        this.storeId = storeId;
+        this.category = category;
+        this.district = district;
+        this.name = name;
+        this.developer = developer;
+        this.description = description;
+        this.address = address;
+        this.phoneNo = phoneNo;
+        this.web = web;
+        this.email = email;
+        this.floor = floor;
+        this.blockNumber = blockNumber;
+        this.photos = photos;
+        this.areaId = areaId;
+        this.stringTags = stringTags;
         this.drawable = drawable;
     }
 
