@@ -1,5 +1,6 @@
 package com.gghouse.woi.whatsonininput.screen;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -101,6 +102,9 @@ public class EditActivity extends AddEditActivity {
                 StoreEditResponse storeListResponse = response.body();
                 switch (storeListResponse.getCode()) {
                     case Config.CODE_200:
+                        Intent returnIntent = new Intent();
+                        returnIntent.putExtra(IntentParam.STORE, mStore);
+                        setResult(Activity.RESULT_OK, returnIntent);
                         finish();
                         break;
                     default:

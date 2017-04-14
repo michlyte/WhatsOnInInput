@@ -44,6 +44,7 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
     static final int ADD_RESPONSE = 99;
+    static final int EDIT_RESPONSE = 98;
     static final String sort = "storeId,desc";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -160,11 +161,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                             })
                             .show();
                 } else {
-                    Intent addActivity = new Intent(this, AddActivity.class);
-                    addActivity.putExtra(IntentParam.CITY, city);
-                    addActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
-                    addActivity.putExtra(IntentParam.AREA_NAME, areaName);
-                    startActivityForResult(addActivity, ADD_RESPONSE);
+                    Intent iAddActivity = new Intent(this, AddActivity.class);
+                    iAddActivity.putExtra(IntentParam.CITY, city);
+                    iAddActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
+                    iAddActivity.putExtra(IntentParam.AREA_NAME, areaName);
+                    startActivityForResult(iAddActivity, ADD_RESPONSE);
                 }
                 return true;
             case R.id.action_upload:
@@ -190,7 +191,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 if (storeGetResponse.getCode() == Config.CODE_200) {
                     Intent iEditActivity = new Intent(getApplicationContext(), EditActivity.class);
                     iEditActivity.putExtra(IntentParam.STORE, storeGetResponse.getData());
-                    startActivity(iEditActivity);
+                    startActivityForResult(iEditActivity, EDIT_RESPONSE);
                 } else {
                     Logger.log("Failed code: " + storeGetResponse.getCode());
                 }
@@ -213,6 +214,27 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                         ws_getStores(HomeMode.REFRESH);
                         break;
                     case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
+            case EDIT_RESPONSE:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        Store store = (Store) data.getSerializableExtra(IntentParam.STORE);
+                        int position = -1;
+                        for (int i = 0; i < mDataSet.size(); i++) {
+                            if (mDataSet.get(i).getStoreId().equals(store.getStoreId())) {
+                                position = i;
+                                break;
+                            }
+                        }
+
+                        if (position != -1) {
+                            mDataSet.set(position, store);
+                            mAdapter.notifyItemChanged(position);
+                        } else {
+                            Logger.log("Error: Edited data is not found on your list.");
+                        }
                         break;
                 }
                 break;
