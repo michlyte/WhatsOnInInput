@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
+import mehdi.sakout.dynamicbox.DynamicBox;
+
 /**
  * Created by michael on 3/29/2017.
  */
@@ -44,7 +46,6 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public ImageView ivImage;
         public TextView tvTitle;
         public TextView tvSubtitle;
-        public ProgressBar pbProgressBar;
 
         public UploadViewHolder(View v) {
             super(v);
@@ -52,13 +53,6 @@ public class UploadAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             ivImage = (ImageView) v.findViewById(R.id.iv_AUI_image);
             tvTitle = (TextView) v.findViewById(R.id.tv_AUI_title);
             tvSubtitle = (TextView) v.findViewById(R.id.tv_AUI_subtitle);
-            pbProgressBar = (ProgressBar) v.findViewById(R.id.pb_AUI_progressBar);
-
-            DoubleBounce doubleBounce = new DoubleBounce();
-            doubleBounce.setBounds(0, 0, 100, 100);
-            pbProgressBar.setIndeterminateDrawable(doubleBounce);
-
-            pbProgressBar.setVisibility(View.GONE);
         }
     }
 
