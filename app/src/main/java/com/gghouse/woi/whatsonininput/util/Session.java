@@ -256,6 +256,20 @@ public abstract class Session {
         }
     }
 
+    public static void updatePhotos(Context context, StoreFileLocation photoPath) {
+        Prefser prefser = new Prefser(context);
+
+        StoreFileLocation[] storeFileLocations = getPhotos(context);
+
+        for (int i = 0; i < storeFileLocations.length; i++) {
+            if (storeFileLocations[i].getLocation().equals(photoPath.getLocation())) {
+                storeFileLocations[i] = photoPath;
+                prefser.put(SP_STORE_FILE_LOCATION, storeFileLocations);
+                break;
+            }
+        }
+    }
+
     public static StoreFileLocation[] getPhotos(Context context) {
         Prefser prefser = new Prefser(context);
 

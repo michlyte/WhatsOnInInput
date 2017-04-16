@@ -14,6 +14,7 @@ import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
+import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
@@ -92,7 +93,7 @@ public class AddActivity extends AddEditActivity {
         /*
          * Save photos
          */
-        List<StoreFileLocation> photos = new ArrayList<StoreFileLocation>();
+        final List<StoreFileLocation> photos = new ArrayList<StoreFileLocation>();
         for (String photoPath : mDataSet) {
             StoreFileLocation storeFileLocation = new StoreFileLocation();
             storeFileLocation.setFileName(name);
@@ -104,7 +105,7 @@ public class AddActivity extends AddEditActivity {
         /*
          * Create reqeuest
          */
-        StoreCreateRequest storeCreateRequest = new StoreCreateRequest();
+        final StoreCreateRequest storeCreateRequest = new StoreCreateRequest();
         storeCreateRequest.setDistrict(district);
         storeCreateRequest.setName(name);
         storeCreateRequest.setDescription(description);
@@ -126,6 +127,11 @@ public class AddActivity extends AddEditActivity {
             public void onResponse(Call<StoreCreateResponse> call, Response<StoreCreateResponse> response) {
                 StoreCreateResponse storeCreateResponse = response.body();
                 if (storeCreateResponse.getCode() == Config.CODE_200) {
+                    for (int i = 0; i < photos.size(); i++) {
+                        photos.get(i).setStoreId(storeCreateResponse.getData().getStoreId());
+                        Session.updatePhotos(getApplicationContext(), photos.get(i));
+                    }
+
                     setResult(Activity.RESULT_OK);
                     finish();
                 } else {

@@ -124,6 +124,7 @@ public abstract class AddEditActivity extends AppCompatActivity {
             if (mCamera.getCameraBitmap() != null) {
                 mDataSet.add(mCamera.getCameraBitmapPath());
                 mAdapter.notifyDataSetChanged();
+                mCamera = null;
             }
         }
     }

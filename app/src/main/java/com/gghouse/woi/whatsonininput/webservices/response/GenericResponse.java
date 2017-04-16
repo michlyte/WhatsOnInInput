@@ -1,5 +1,7 @@
 package com.gghouse.woi.whatsonininput.webservices.response;
 
+import com.github.pwittchen.prefser.library.Prefser;
+
 /**
  * Created by michael on 3/16/2017.
  */
@@ -17,7 +19,11 @@ public class GenericResponse {
     }
 
     public Integer getCode() {
-        return (code != null ? code : 400);
+        if (code == null) {
+            return 400;
+        } else {
+            return code;
+        }
     }
 
     public void setCode(Integer code) {

@@ -1,15 +1,19 @@
 package com.gghouse.woi.whatsonininput.webservices;
 
 import com.gghouse.woi.whatsonininput.model.Store;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.model.Dummy;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
+import com.gghouse.woi.whatsonininput.webservices.request.StoreFileLocationRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaCategoryListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.AreaNameListResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.CityListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.GenericResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreGetResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
 
 import java.util.List;
 
@@ -68,4 +72,7 @@ public interface ApiService {
 
     @GET("/areas")
     Call<AreaNameListResponse> getAreaNames(@Query("category") long categoryId);
+
+    @PUT("/bulk-photos")
+    Call<StoreUploadPhotosResponse> uploadPhotos(@Body StoreFileLocationRequest[] storeFileLocationRequests);
 }

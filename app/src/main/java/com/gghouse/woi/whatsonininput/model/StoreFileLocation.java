@@ -7,15 +7,28 @@ import java.io.Serializable;
  */
 
 public class StoreFileLocation implements Serializable {
-    private Long storeFileId;
-    private String location;
-    private String fileName;
-    private String status;
-    private Long storeId;
-    private String createdBy;
-    private Long createdOn;
-    private String updatedBy;
-    private String updatedOn;
+    protected Long storeFileId;
+    protected String location;
+    protected String fileName;
+    protected String status;
+    protected Long storeId;
+    protected String createdBy;
+    protected Long createdOn;
+    protected String updatedBy;
+    protected String updatedOn;
+
+    public StoreFileLocation() {
+
+    }
+
+    public StoreFileLocation(String location, String fileName, String status, Long storeId, String createdBy, String updatedBy) {
+        this.location = location;
+        this.fileName = fileName;
+        this.status = status;
+        this.storeId = storeId;
+        this.createdBy = createdBy;
+        this.updatedBy = updatedBy;
+    }
 
     public Long getStoreFileId() {
         return storeFileId;

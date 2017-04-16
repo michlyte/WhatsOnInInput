@@ -1,11 +1,14 @@
 package com.gghouse.woi.whatsonininput.screen;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,11 +16,23 @@ import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
+import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
+import com.gghouse.woi.whatsonininput.webservices.ApiClient;
+import com.gghouse.woi.whatsonininput.webservices.request.StoreFileLocationRequest;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by michael on 3/29/2017.
@@ -29,6 +44,7 @@ public class UploadActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
 
     private List<StoreFileLocation> mDataSet;
+    private List<Target> targetList = new ArrayList<Target>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,40 +97,76 @@ public class UploadActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_send:
-//                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE);
-//                callStoreListLoadMore.enqueue(new Callback<StoreListResponse>() {
-//                    @Override
-//                    public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
-//                        //Remove loading item
-//                        mAdapter.remove(mAdapter.getItemCount() - 1);
-//                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
-//
-//                        StoreListResponse storeListResponse = response.body();
-//                        switch (storeListResponse.getCode()) {
-//                            case Config.CODE_200:
-//                                manageOnLoadMoreListener(storeListResponse.getPagination());
-//                                List<Store> newDataSet = storeListResponse.getData();
-//                                mDataSet.addAll(newDataSet);
-//                                break;
-//                            default:
-//                                Logger.log("Status" + "[" + storeListResponse.getCode() + "]: " + storeListResponse.getStatus());
-//                                break;
-//                        }
-//                        mAdapter.notifyDataSetChanged();
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<StoreListResponse> call, Throwable t) {
-//                        Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
-//
-//                        //Remove loading item
-//                        mAdapter.remove(mAdapter.getItemCount() - 1);
-//                        mAdapter.notifyItemRemoved(mAdapter.getItemCount());
-//                        mAdapter.setLoaded();
-//                    }
-//                });
+                targetList.clear();
+                for (StoreFileLocation storeFileLocation : mDataSet) {
+                    ws_uploadPhoto(storeFileLocation);
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private synchronized void ws_uploadPhoto(final StoreFileLocation storeFileLocation) {
+        if (storeFileLocation.getStoreId() != null) {
+            Target target = new com.squareup.picasso.Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    StoreFileLocationRequest[] storeFileLocationRequests = new StoreFileLocationRequest[1];
+
+                    StoreFileLocationRequest storeFileLocationRequest = new StoreFileLocationRequest(
+                            storeFileLocation.getLocation(), storeFileLocation.getFileName(), "A",
+                            storeFileLocation.getStoreId(), storeFileLocation.getCreatedBy(), storeFileLocation.getUpdatedBy(),
+                            convert(bitmap));
+
+                    storeFileLocationRequests[0] = storeFileLocationRequest;
+
+                    Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationRequests);
+                    callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
+                        @Override
+                        public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
+                            StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
+                            switch (storeUploadPhotosResponse.getCode()) {
+                                case Config.CODE_200:
+                                    break;
+                                default:
+                                    Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
+                            Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+                        }
+                    });
+
+                    targetList.remove(this);
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+                    targetList.remove(this);
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+
+            targetList.add(target);
+            Picasso.with(this)
+                    .load(new File(storeFileLocation.getLocation()))
+                    .into(target);
+        } else {
+            Logger.log("StoreId is null with fileName: " + storeFileLocation.getFileName());
+        }
+    }
+
+    private String convert(Bitmap bitmap) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
     }
 }
