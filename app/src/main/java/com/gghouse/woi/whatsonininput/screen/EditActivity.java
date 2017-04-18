@@ -14,6 +14,7 @@ import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
 
@@ -40,7 +41,20 @@ public class EditActivity extends AddEditActivity {
         } else {
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
             for (StoreFileLocation storeFileLocation : mStore.getPhotos()) {
-                mDataSet.add(storeFileLocation.getLocation());
+                mDataSet.add(storeFileLocation);
+            }
+            StoreFileLocation[] storeFileLocations = Session.getPhotos(this);
+            for (final StoreFileLocation storeFileLocation : storeFileLocations) {
+                boolean isExist = false;
+                for (StoreFileLocation mData: mDataSet) {
+                    if (mData.getFileName().equals(storeFileLocation.getFileName())) {
+                        isExist = true;
+                    }
+                }
+
+                if (!isExist) {
+                    mDataSet.add(storeFileLocation);
+                }
             }
             mAdapter.notifyDataSetChanged();
 

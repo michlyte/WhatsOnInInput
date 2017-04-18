@@ -240,7 +240,7 @@ public abstract class Session {
         }
     }
 
-    public static void addPhotos(Context context, StoreFileLocation photoPath) {
+    public static void addPhoto(Context context, StoreFileLocation photoPath) {
         Prefser prefser = new Prefser(context);
 
         StoreFileLocation[] photoPathArr = getPhotos(context);

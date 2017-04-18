@@ -16,6 +16,7 @@ import android.widget.EditText;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.PhotoAdapter;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.mindorks.paracamera.Camera;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ import pl.tajchert.nammu.PermissionCallback;
 
 public abstract class AddEditActivity extends AppCompatActivity {
 
+    protected final String tempPhotoName = "${temp}";
+
     private Camera mCamera;
     protected Button mBAddphoto;
     protected RecyclerView mRecyclerView;
     protected PhotoAdapter mAdapter;
     protected LinearLayoutManager mLayoutManager;
-    protected List<String> mDataSet;
+    protected List<StoreFileLocation> mDataSet;
 
     protected Button mBCity;
     protected Button mBAreaCategory;
@@ -51,6 +54,8 @@ public abstract class AddEditActivity extends AppCompatActivity {
     protected EditText mETFloor;
     protected EditText mETBlockNumber;
     protected EditText mETTags;
+
+    private String tempFilename;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -74,7 +79,7 @@ public abstract class AddEditActivity extends AppCompatActivity {
             });
         }
 
-        mDataSet = new ArrayList<String>();
+        mDataSet = new ArrayList<StoreFileLocation>();
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_AAPC_recyclerView);
         mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -122,7 +127,8 @@ public abstract class AddEditActivity extends AppCompatActivity {
 //            Bitmap bitmap = mCamera.getCameraBitmap();
 
             if (mCamera.getCameraBitmap() != null) {
-                mDataSet.add(mCamera.getCameraBitmapPath());
+                StoreFileLocation storeFileLocation = new StoreFileLocation(tempFilename, mCamera.getCameraBitmapPath());
+                mDataSet.add(storeFileLocation);
                 mAdapter.notifyDataSetChanged();
                 mCamera = null;
             }
@@ -136,11 +142,12 @@ public abstract class AddEditActivity extends AppCompatActivity {
 
     protected void initCamera(String name) {
         if (mCamera == null) {
+            tempFilename = "IMG" + "_" + tempPhotoName + "_" + System.currentTimeMillis();
             mCamera = new Camera.Builder()
                     .resetToCorrectOrientation(true)// it will rotate the camera bitmap to the correct orientation from meta data
                     .setTakePhotoRequestCode(1)
                     .setDirectory("WOIInput")
-                    .setName((name.isEmpty() ? "woi" : name) + "_" + System.currentTimeMillis())
+                    .setName(tempFilename)
                     .setImageFormat(Camera.IMAGE_JPEG)
                     .setCompression(75)
                     .setImageHeight(1000)// it will try to achieve this height as close as possible maintaining the aspect ratio;

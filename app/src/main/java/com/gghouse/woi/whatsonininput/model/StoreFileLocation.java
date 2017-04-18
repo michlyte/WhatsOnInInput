@@ -21,6 +21,11 @@ public class StoreFileLocation implements Serializable {
 
     }
 
+    public StoreFileLocation(String fileName, String location) {
+        this.fileName = fileName;
+        this.location = location;
+    }
+
     public StoreFileLocation(String location, String fileName, String status, Long storeId, String createdBy, String updatedBy) {
         this.location = location;
         this.fileName = fileName;

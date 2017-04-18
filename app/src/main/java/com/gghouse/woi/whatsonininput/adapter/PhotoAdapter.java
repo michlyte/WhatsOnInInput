@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -20,12 +21,12 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
     private Context mContext;
-    private List<String> mDataset;
+    private List<StoreFileLocation> mDataset;
 
     static class PhotoViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final ImageView mImageView;
-        public String mItem;
+        public StoreFileLocation mItem;
 
         public PhotoViewHolder(View v) {
             super(v);
@@ -34,7 +35,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
     }
 
-    public PhotoAdapter(Context context, List<String> myDataset) {
+    public PhotoAdapter(Context context, List<StoreFileLocation> myDataset) {
         mContext = context;
         mDataset = myDataset;
     }
@@ -52,7 +53,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         holder.mItem = mDataset.get(position);
         Picasso.with(mContext)
-                .load(new File(holder.mItem))
+                .load(new File(holder.mItem.getLocation()))
                 .fit()
                 .centerCrop()
                 .into(holder.mImageView);

@@ -14,7 +14,6 @@ import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
-import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
@@ -22,7 +21,7 @@ import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.List;
 
 import retrofit2.Call;
@@ -91,18 +90,6 @@ public class AddActivity extends AddEditActivity {
 
     private void ws_createStore(String district, String name, String description, String address, String phoneNumber, String web, String email, String floor, String blockNumber, String tags) {
         /*
-         * Save photos
-         */
-        final List<StoreFileLocation> photos = new ArrayList<StoreFileLocation>();
-        for (String photoPath : mDataSet) {
-            StoreFileLocation storeFileLocation = new StoreFileLocation();
-            storeFileLocation.setFileName(name);
-            storeFileLocation.setLocation(photoPath);
-            photos.add(storeFileLocation);
-            Session.addPhotos(this, storeFileLocation);
-        }
-
-        /*
          * Create reqeuest
          */
         final StoreCreateRequest storeCreateRequest = new StoreCreateRequest();
@@ -116,7 +103,7 @@ public class AddActivity extends AddEditActivity {
         storeCreateRequest.setFloor(floor);
         storeCreateRequest.setBlockNumber(blockNumber);
         storeCreateRequest.setStringTags(tags);
-        storeCreateRequest.setPhotos(photos);
+//        storeCreateRequest.setPhotos(photos);
 
         storeCreateRequest.setCategory(mAreaCategory);
         storeCreateRequest.setAreaId(mAreaName.getAreaId());
@@ -127,9 +114,12 @@ public class AddActivity extends AddEditActivity {
             public void onResponse(Call<StoreCreateResponse> call, Response<StoreCreateResponse> response) {
                 StoreCreateResponse storeCreateResponse = response.body();
                 if (storeCreateResponse.getCode() == Config.CODE_200) {
+                    List<StoreFileLocation> photos = mDataSet;
                     for (int i = 0; i < photos.size(); i++) {
                         photos.get(i).setStoreId(storeCreateResponse.getData().getStoreId());
-                        Session.updatePhotos(getApplicationContext(), photos.get(i));
+                        String replacedFileName = photos.get(i).getFileName().replace(tempPhotoName, storeCreateResponse.getData().getStoreId() + "");
+                        photos.get(i).setFileName(replacedFileName);
+                        Session.addPhoto(getApplicationContext(), photos.get(i));
                     }
 
                     setResult(Activity.RESULT_OK);
@@ -150,5 +140,12 @@ public class AddActivity extends AddEditActivity {
     public void onBackPressed() {
         setResult(Activity.RESULT_CANCELED);
         finish();
+    }
+
+    private void deleteImage(String path) {
+        File image = new File(path);
+        if (image.exists()) {
+            image.delete();
+        }
     }
 }
