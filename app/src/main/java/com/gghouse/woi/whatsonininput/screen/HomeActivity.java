@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -161,7 +160,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                             })
                             .show();
                 } else {
-                    Intent iAddActivity = new Intent(this, AddActivity.class);
+                    Intent iAddActivity = new Intent(this, AddActivityNext.class);
                     iAddActivity.putExtra(IntentParam.CITY, city);
                     iAddActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
                     iAddActivity.putExtra(IntentParam.AREA_NAME, areaName);

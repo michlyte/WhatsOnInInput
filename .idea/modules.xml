@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/WhatsOnInInput.iml" filepath="$PROJECT_DIR$/WhatsOnInInput.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WhatsOnInInput.iml" filepath="$PROJECT_DIR$/WhatsOnInInput.iml" />
       <module fileurl="file://$USER_HOME$/Desktop/Android/WhatsOnInInput/WhatsOnInInput.iml" filepath="$USER_HOME$/Desktop/Android/WhatsOnInInput/WhatsOnInInput.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$USER_HOME$/Desktop/Android/WhatsOnInInput/app/app.iml" filepath="$USER_HOME$/Desktop/Android/WhatsOnInInput/app/app.iml" />
     </modules>
