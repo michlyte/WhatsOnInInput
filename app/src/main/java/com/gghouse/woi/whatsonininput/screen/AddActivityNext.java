@@ -21,6 +21,7 @@ import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
 
+import java.io.File;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -117,7 +118,18 @@ public class AddActivityNext extends AddEditActivityNext {
                         StoreFileLocation storeFileLocation = entry.getValue();
                         if (storeFileLocation != null) {
                             storeFileLocation.setStoreId(storeCreateResponse.getData().getStoreId());
-                            String replacedFileName = storeFileLocation.getFileName().replace(tempPhotoName, storeCreateResponse.getData().getStoreId() + "");
+                            // Replace fileName with StoreId
+                            String replacedFileName = storeFileLocation.getFileName().replace(
+                                    tempPhotoName, storeCreateResponse.getData().getStoreId() + "");
+                            // Replace location with StoreId
+                            File photoFile = new File(storeFileLocation.getLocation());
+                            String replacedLocation = storeFileLocation.getLocation().replace(
+                                    storeFileLocation.getFileName(), replacedFileName);
+                            File newPhotoFile = new File(replacedLocation);
+                            boolean success = photoFile.renameTo(newPhotoFile);
+                            if (!success)
+                                Logger.log("Rename " + storeFileLocation.getLocation() + " failed.");
+                            storeFileLocation.setLocation(replacedLocation);
                             storeFileLocation.setFileName(replacedFileName);
                             entry.setValue(storeFileLocation);
 

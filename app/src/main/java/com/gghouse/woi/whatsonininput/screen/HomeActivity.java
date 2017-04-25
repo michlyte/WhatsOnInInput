@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
             public void onResponse(Call<StoreGetResponse> call, Response<StoreGetResponse> response) {
                 StoreGetResponse storeGetResponse = response.body();
                 if (storeGetResponse.getCode() == Config.CODE_200) {
-                    Intent iEditActivity = new Intent(getApplicationContext(), EditActivity.class);
+                    Intent iEditActivity = new Intent(getApplicationContext(), EditActivityNext.class);
                     iEditActivity.putExtra(IntentParam.STORE, storeGetResponse.getData());
                     startActivityForResult(iEditActivity, EDIT_RESPONSE);
                 } else {

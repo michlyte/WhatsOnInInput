@@ -239,7 +239,7 @@ public abstract class AddEditActivityNext extends AppCompatActivity {
         mHmPhoto.put(idx, null);
     }
 
-    private ImageView getImageView(int idx) {
+    protected ImageView getImageView(int idx) {
         ImageView imageView = null;
         switch (idx) {
             case 1:
