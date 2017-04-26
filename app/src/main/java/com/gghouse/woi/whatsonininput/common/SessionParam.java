@@ -21,4 +21,5 @@ public interface SessionParam {
 
 //    String SP_PHOTOS = "SP_PHOTOS";
     String SP_STORE_FILE_LOCATION = "SP_STORE_FILE_LOCATION";
+    String SP_LOCAL_PHOTOS = "SP_LOCAL_PHOTOS";
 }

@@ -251,7 +251,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     @Override
                     public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
                         StoreListResponse storeListResponse = response.body();
-                        System.out.println(response.body());
                         if (storeListResponse.getCode() == Config.CODE_200) {
                             manageOnLoadMoreListener(storeListResponse.getPagination());
                             mRecyclerView.setAdapter(null);

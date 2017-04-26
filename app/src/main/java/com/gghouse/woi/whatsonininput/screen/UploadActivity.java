@@ -1,7 +1,7 @@
 package com.gghouse.woi.whatsonininput.screen;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -15,19 +15,19 @@ import android.view.MenuItem;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
-import com.gghouse.woi.whatsonininput.webservices.request.StoreFileLocationRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
-import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -53,9 +53,8 @@ public class UploadActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDataSet = new ArrayList<StoreFileLocation>();
-        StoreFileLocation[] storeFileLocations = Session.getPhotos(this);
-        mDataSet.addAll(Arrays.asList(storeFileLocations));
+        MyLocalPhotos myLocalPhotos = Session.getLocalPhotos(this);
+        mDataSet = myLocalPhotos.getPhotos();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
@@ -98,69 +97,41 @@ public class UploadActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_send:
                 targetList.clear();
-                for (StoreFileLocation storeFileLocation : mDataSet) {
-                    ws_uploadPhoto(storeFileLocation);
+                for (int i = 0; i < mDataSet.size(); i++) {
+                    Bitmap bitmap = loadImageFromStorage(mDataSet.get(i).getLocation());
+                    if (bitmap != null) {
+                        mDataSet.get(i).setStrImgBase64(convert(bitmap));
+                    } else {
+                        Logger.log("Filename: " + mDataSet.get(i).getFileName() + ", path: " + mDataSet.get(i).getLocation() + " is not existed.");
+                    }
                 }
+                ws_uploadPhoto(mDataSet);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private synchronized void ws_uploadPhoto(final StoreFileLocation storeFileLocation) {
-        if (storeFileLocation.getStoreId() != null) {
-            Target target = new com.squareup.picasso.Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                    StoreFileLocationRequest[] storeFileLocationRequests = new StoreFileLocationRequest[1];
-
-                    StoreFileLocationRequest storeFileLocationRequest = new StoreFileLocationRequest(
-                            storeFileLocation.getLocation(), storeFileLocation.getFileName(), "A",
-                            storeFileLocation.getStoreId(), storeFileLocation.getCreatedBy(), storeFileLocation.getUpdatedBy(),
-                            convert(bitmap));
-
-                    storeFileLocationRequests[0] = storeFileLocationRequest;
-
-                    Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationRequests);
-                    callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
-                        @Override
-                        public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
-                            StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
-                            switch (storeUploadPhotosResponse.getCode()) {
-                                case Config.CODE_200:
-                                    break;
-                                default:
-                                    Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
-                            Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
-                        }
-                    });
-
-                    targetList.remove(this);
+    private void ws_uploadPhoto(List<StoreFileLocation> storeFileLocationList) {
+        Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
+        callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
+            @Override
+            public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
+                StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
+                switch (storeUploadPhotosResponse.getCode()) {
+                    case Config.CODE_200:
+                        Session.clearLocalPhotos(getApplicationContext());
+                        break;
+                    default:
+                        Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
+                        break;
                 }
+            }
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
-                    targetList.remove(this);
-                }
-
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            };
-
-            targetList.add(target);
-            Picasso.with(this)
-                    .load(new File(storeFileLocation.getLocation()))
-                    .into(target);
-        } else {
-            Logger.log("StoreId is null with fileName: " + storeFileLocation.getFileName());
-        }
+            @Override
+            public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
+                Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+            }
+        });
     }
 
     private String convert(Bitmap bitmap) {
@@ -168,5 +139,16 @@ public class UploadActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
 
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
+    }
+
+    private Bitmap loadImageFromStorage(String path) {
+        try {
+            File f = new File(path);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

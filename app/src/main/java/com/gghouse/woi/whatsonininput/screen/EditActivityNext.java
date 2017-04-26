@@ -21,6 +21,7 @@ import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
@@ -43,34 +44,21 @@ public class EditActivityNext extends AddEditActivityNext {
             Logger.log("Store is null.");
         } else {
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
-            for (int i = 0; i < mStore.getPhotos().size(); i++) {
-                mHmPhoto.put((i + 1), mStore.getPhotos().get(i));
+            /*
+             * Local photos
+             */
+            List<StoreFileLocation> localPhotos = Session.getLocalPhotosByStoreId(this, mStore.getStoreId());
+            for (int i = 0; i < localPhotos.size(); i++) {
+                mHmPhoto.put((i + 1), localPhotos.get(i));
             }
 
-            StoreFileLocation[] storeFileLocations = Session.getPhotos(this);
-            for (final StoreFileLocation storeFileLocation : storeFileLocations) {
-                if (storeFileLocation.getFileName().startsWith("IMG_" + mStore.getStoreId() + "_")) {
-                    boolean isExist = false;
-                    for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
-                        if (entry.getValue() != null && entry.getValue().getFileName().equals(storeFileLocation.getFileName())) {
-                            isExist = true;
-                            break;
-                        }
-                    }
+            /*
+             * Server photos
+             */
 
-                    if (!isExist) {
-                        for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
-                            if (entry.getValue() == null) {
-                                entry.setValue(storeFileLocation);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            printPhotos();
-
+            /*
+             * Set photo view
+             */
             for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
                 ImageView imageView = getImageView(entry.getKey());
                 StoreFileLocation storeFileLocation = entry.getValue();

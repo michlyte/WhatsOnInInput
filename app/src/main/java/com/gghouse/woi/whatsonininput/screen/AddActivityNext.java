@@ -133,7 +133,8 @@ public class AddActivityNext extends AddEditActivityNext {
                             storeFileLocation.setFileName(replacedFileName);
                             entry.setValue(storeFileLocation);
 
-                            Session.addPhoto(getApplicationContext(), storeFileLocation);
+//                            Session.addPhoto(getApplicationContext(), storeFileLocation);
+                            Session.saveLocalPhoto(getApplicationContext(), storeFileLocation);
                         }
                     }
 

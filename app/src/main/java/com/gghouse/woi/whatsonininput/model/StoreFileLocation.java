@@ -16,6 +16,10 @@ public class StoreFileLocation implements Serializable {
     protected Long createdOn;
     protected String updatedBy;
     protected String updatedOn;
+    private String strImgBase64;
+
+    // Default true
+    private boolean local = true;
 
     public StoreFileLocation() {
 
@@ -105,5 +109,21 @@ public class StoreFileLocation implements Serializable {
 
     public void setUpdatedOn(String updatedOn) {
         this.updatedOn = updatedOn;
+    }
+
+    public String getStrImgBase64() {
+        return strImgBase64;
+    }
+
+    public void setStrImgBase64(String strImgBase64) {
+        this.strImgBase64 = strImgBase64;
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 }

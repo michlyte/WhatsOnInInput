@@ -8,6 +8,7 @@ import com.gghouse.woi.whatsonininput.common.SessionParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
+import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
@@ -22,6 +23,7 @@ import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME_ID;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITY_ID;
+import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_LOCAL_PHOTOS;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_STORE_FILE_LOCATION;
 
 /**
@@ -278,5 +280,62 @@ public abstract class Session {
             photoPath = prefser.get(SP_STORE_FILE_LOCATION, StoreFileLocation[].class, new StoreFileLocation[]{});
         }
         return photoPath;
+    }
+
+    /*
+     * Local Photos
+     */
+    public static MyLocalPhotos getLocalPhotos(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        MyLocalPhotos myLocalPhotos = new MyLocalPhotos(new ArrayList<StoreFileLocation>());
+        if (prefser.contains(SP_LOCAL_PHOTOS)) {
+            myLocalPhotos = prefser.get(SP_LOCAL_PHOTOS, MyLocalPhotos.class, new MyLocalPhotos(new ArrayList<StoreFileLocation>()));
+        }
+        return myLocalPhotos;
+    }
+
+    public static List<StoreFileLocation> getLocalPhotosByStoreId(Context context, long storeId) {
+        List<StoreFileLocation> storeFileLocationList = new ArrayList<StoreFileLocation>();
+        MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        for (StoreFileLocation storeFileLocation : myLocalPhotos.getPhotos()) {
+            if (storeFileLocation.getFileName().startsWith("IMG_" + storeId + "_")) {
+                storeFileLocationList.add(storeFileLocation);
+            }
+        }
+        return storeFileLocationList;
+    }
+
+    public static void saveLocalPhoto(Context context, StoreFileLocation storeFileLocation) {
+        Prefser prefser = new Prefser(context);
+
+        MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        if (!myLocalPhotos.getPhotos().contains(storeFileLocation)) {
+            myLocalPhotos.getPhotos().add(0, storeFileLocation);
+            prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
+            Logger.log("[Session] Filename: " + storeFileLocation.getFileName() + " with path: " + storeFileLocation.getLocation() + " is saved.");
+        }
+    }
+
+    public static void saveLocalPhotosByStoreId(Context context, long storeId, List<StoreFileLocation> storeFileLocationList) {
+        Prefser prefser = new Prefser(context);
+
+        MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        for (StoreFileLocation storeFileLocation : myLocalPhotos.getPhotos()) {
+            if (storeFileLocation.getFileName().startsWith("IMG_" + storeId + "_")) {
+                myLocalPhotos.getPhotos().remove(storeFileLocation);
+                Logger.log("[Session] Filename: " + storeFileLocation.getFileName() + " with path: " + storeFileLocation.getLocation() + " is deleted.");
+            }
+        }
+
+        myLocalPhotos.getPhotos().addAll(storeFileLocationList);
+
+        prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
+    }
+
+    public static void clearLocalPhotos(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        prefser.remove(SP_LOCAL_PHOTOS);
     }
 }
