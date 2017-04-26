@@ -169,20 +169,7 @@ public abstract class AddEditActivityNext extends AppCompatActivity {
 
         if (requestCode == Camera.REQUEST_TAKE_PHOTO) {
             if (mCamera.getCameraBitmap() != null) {
-                StoreFileLocation storeFileLocation = new StoreFileLocation(tempFilename, mCamera.getCameraBitmapPath());
-
-                ImageView imageView = getImageView(this.idx);
-                if (imageView != null) {
-                    resetPhoto(imageView, this.idx);
-                    mHmPhoto.put(this.idx, storeFileLocation);
-                    Picasso.with(this)
-                            .load(new File(storeFileLocation.getLocation()))
-                            .fit()
-                            .centerCrop()
-                            .into(imageView);
-                    printPhotos();
-                }
-
+                postPhoto(this.idx, tempFilename, mCamera.getCameraBitmapPath());
                 mCamera = null;
             }
         }
@@ -220,25 +207,6 @@ public abstract class AddEditActivityNext extends AppCompatActivity {
         }
     }
 
-    private void resetPhoto(ImageView iv, int idx) {
-        StoreFileLocation storeFileLocation = mHmPhoto.get(idx);
-
-        // Delete photo file
-        if (storeFileLocation != null) {
-            File image = new File(storeFileLocation.getLocation());
-            if (image.exists()) {
-                image.delete();
-            }
-        }
-        Picasso.with(this)
-                .load(R.drawable.no_image)
-                .fit()
-                .centerCrop()
-                .into(iv);
-
-        mHmPhoto.put(idx, null);
-    }
-
     protected ImageView getImageView(int idx) {
         ImageView imageView = null;
         switch (idx) {
@@ -255,16 +223,23 @@ public abstract class AddEditActivityNext extends AppCompatActivity {
         return imageView;
     }
 
-    protected void clearPhotos() {
-        for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
-            StoreFileLocation storeFileLocation = entry.getValue();
-            if (storeFileLocation != null) {
-                File image = new File(storeFileLocation.getLocation());
-                if (image.exists()) {
-                    image.delete();
-                    Logger.log("File: " + image + " is deleted.");
-                }
-            }
+    protected abstract void resetPhoto(ImageView iv, int idx);
+
+    protected abstract void clearPhotos();
+
+    private void postPhoto(int idx, String filename, String cameraBitmapPath) {
+        StoreFileLocation storeFileLocation = new StoreFileLocation(filename, cameraBitmapPath);
+
+        ImageView imageView = getImageView(idx);
+        if (imageView != null) {
+            resetPhoto(imageView, idx);
+            mHmPhoto.put(idx, storeFileLocation);
+            Picasso.with(this)
+                    .load(new File(storeFileLocation.getLocation()))
+                    .fit()
+                    .centerCrop()
+                    .into(imageView);
+            printPhotos();
         }
     }
 

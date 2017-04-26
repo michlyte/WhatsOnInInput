@@ -120,6 +120,7 @@ public class UploadActivity extends AppCompatActivity {
                 switch (storeUploadPhotosResponse.getCode()) {
                     case Config.CODE_200:
                         Session.clearLocalPhotos(getApplicationContext());
+                        finish();
                         break;
                     default:
                         Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());

@@ -21,6 +21,7 @@ import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +35,7 @@ import retrofit2.Response;
 
 public class EditActivityNext extends AddEditActivityNext {
     private Store mStore;
+    private HashMap<Integer, StoreFileLocation> mHmInitPhoto;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class EditActivityNext extends AddEditActivityNext {
         if (intent == null) {
             Logger.log("Store is null.");
         } else {
+            mHmInitPhoto = new HashMap<Integer, StoreFileLocation>();
+
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
             /*
              * Local photos
@@ -55,6 +59,27 @@ public class EditActivityNext extends AddEditActivityNext {
             /*
              * Server photos
              */
+            for (int i = 0; i < mStore.getPhotos().size(); i++) {
+                boolean isExist = localPhotos.contains(mStore.getPhotos().get(i));
+
+                if (!isExist) {
+                    for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
+                        StoreFileLocation storeFileLocation = entry.getValue();
+                        if (storeFileLocation == null) {
+                            mStore.getPhotos().get(i).setLocal(false);
+                            entry.setValue(mStore.getPhotos().get(i));
+                            break;
+                        }
+                    }
+                }
+            }
+
+            /*
+             * Save initial value
+             */
+            for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
+                mHmInitPhoto.put(entry.getKey(), entry.getValue());
+            }
 
             /*
              * Set photo view
@@ -63,11 +88,19 @@ public class EditActivityNext extends AddEditActivityNext {
                 ImageView imageView = getImageView(entry.getKey());
                 StoreFileLocation storeFileLocation = entry.getValue();
                 if (imageView != null && storeFileLocation != null && storeFileLocation.getLocation() != null) {
-                    Picasso.with(this)
-                            .load(new File(storeFileLocation.getLocation()))
-                            .fit()
-                            .centerCrop()
-                            .into(imageView);
+                    if (storeFileLocation.isLocal()) {
+                        Picasso.with(this)
+                                .load(new File(storeFileLocation.getLocation()))
+                                .fit()
+                                .centerCrop()
+                                .into(imageView);
+                    } else {
+                        Picasso.with(this)
+                                .load(storeFileLocation.getLocation())
+                                .fit()
+                                .centerCrop()
+                                .into(imageView);
+                    }
                 }
             }
 
@@ -145,5 +178,52 @@ public class EditActivityNext extends AddEditActivityNext {
                 Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        clearPhotos();
+        setResult(Activity.RESULT_CANCELED);
+        finish();
+    }
+
+    @Override
+    protected void resetPhoto(ImageView iv, int idx) {
+        StoreFileLocation storeFileLocation = mHmPhoto.get(idx);
+        StoreFileLocation storeFileLocationInit = mHmInitPhoto.get(idx);
+
+        if (storeFileLocation != null) {
+            if (storeFileLocation.isLocal() &&
+                    (storeFileLocationInit == null || !storeFileLocationInit.getFileName().equals(storeFileLocation.getFileName()))) {
+                File image = new File(storeFileLocation.getLocation());
+                if (image.exists()) {
+                    image.delete();
+                    Logger.log("[resetPhoto] Filename: " + storeFileLocation.getFileName() + ", path: " + storeFileLocation.getLocation() + " is deleted.");
+                }
+            }
+
+            Picasso.with(this)
+                    .load(R.drawable.no_image)
+                    .fit()
+                    .centerCrop()
+                    .into(iv);
+            mHmPhoto.put(idx, null);
+        }
+    }
+
+    @Override
+    protected void clearPhotos() {
+        for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
+            StoreFileLocation storeFileLocation = entry.getValue();
+            StoreFileLocation storeFileLocationInit = mHmInitPhoto.get(entry.getKey());
+            if ((storeFileLocationInit == null && storeFileLocation != null) ||
+                    (storeFileLocationInit != null && storeFileLocation != null && !storeFileLocationInit.getFileName().equals(storeFileLocation.getFileName()))) {
+                File image = new File(storeFileLocation.getLocation());
+                if (image.exists()) {
+                    image.delete();
+                    Logger.log("[clearPhotos] Filename: " + storeFileLocation.getFileName() + " is deleted.");
+                }
+            }
+        }
     }
 }

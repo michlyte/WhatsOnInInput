@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
@@ -20,6 +21,7 @@ import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.request.StoreCreateRequest;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreCreateResponse;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.Map;
@@ -133,7 +135,6 @@ public class AddActivityNext extends AddEditActivityNext {
                             storeFileLocation.setFileName(replacedFileName);
                             entry.setValue(storeFileLocation);
 
-//                            Session.addPhoto(getApplicationContext(), storeFileLocation);
                             Session.saveLocalPhoto(getApplicationContext(), storeFileLocation);
                         }
                     }
@@ -163,5 +164,39 @@ public class AddActivityNext extends AddEditActivityNext {
         clearPhotos();
         setResult(Activity.RESULT_CANCELED);
         finish();
+    }
+
+    @Override
+    protected void resetPhoto(ImageView iv, int idx) {
+        StoreFileLocation storeFileLocation = mHmPhoto.get(idx);
+
+        // Delete photo file
+        if (storeFileLocation != null) {
+            File image = new File(storeFileLocation.getLocation());
+            if (image.exists()) {
+                image.delete();
+            }
+        }
+        Picasso.with(this)
+                .load(R.drawable.no_image)
+                .fit()
+                .centerCrop()
+                .into(iv);
+
+        mHmPhoto.put(idx, null);
+    }
+
+    @Override
+    protected void clearPhotos() {
+        for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
+            StoreFileLocation storeFileLocation = entry.getValue();
+            if (storeFileLocation != null) {
+                File image = new File(storeFileLocation.getLocation());
+                if (image.exists()) {
+                    image.delete();
+                    Logger.log("File: " + image + " is deleted.");
+                }
+            }
+        }
     }
 }
