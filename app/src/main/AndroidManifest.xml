@@ -11,9 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.AddActivity" />
         <activity android:name=".screen.AddActivityNext" />
-        <activity android:name=".screen.EditActivity" />
         <activity android:name=".screen.EditActivityNext" />
         <activity
             android:name=".screen.UploadActivity"

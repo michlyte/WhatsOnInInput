@@ -18,9 +18,11 @@ import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
+import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class EditActivityNext extends AddEditActivityNext {
             mHmInitPhoto = new HashMap<Integer, StoreFileLocation>();
 
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
+            tempPhotoName = mStore.getStoreId() + "";
             /*
              * Local photos
              */
@@ -162,6 +165,18 @@ public class EditActivityNext extends AddEditActivityNext {
                 StoreEditResponse storeListResponse = response.body();
                 switch (storeListResponse.getCode()) {
                     case Config.CODE_200:
+                        for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
+                            StoreFileLocation storeFileLocation = entry.getValue();
+                            StoreFileLocation storeFileLocationInit = mHmInitPhoto.get(entry.getKey());
+                            if (storeFileLocationInit != null &&
+                                    (storeFileLocation == null || (storeFileLocation != null && !storeFileLocation.getFileName().equals(storeFileLocationInit.getFileName())))) {
+                                deleteImageByPath(storeFileLocationInit.getLocation());
+                            }
+                        }
+
+                        List<StoreFileLocation> storeFileLocationList = new ArrayList<StoreFileLocation>(mHmPhoto.values());
+                        Session.saveLocalPhotosByStoreId(getApplicationContext(), mStore.getStoreId(), storeFileLocationList);
+
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra(IntentParam.STORE, mStore);
                         setResult(Activity.RESULT_OK, returnIntent);
@@ -195,11 +210,7 @@ public class EditActivityNext extends AddEditActivityNext {
         if (storeFileLocation != null) {
             if (storeFileLocation.isLocal() &&
                     (storeFileLocationInit == null || !storeFileLocationInit.getFileName().equals(storeFileLocation.getFileName()))) {
-                File image = new File(storeFileLocation.getLocation());
-                if (image.exists()) {
-                    image.delete();
-                    Logger.log("[resetPhoto] Filename: " + storeFileLocation.getFileName() + ", path: " + storeFileLocation.getLocation() + " is deleted.");
-                }
+                deleteImageByPath(storeFileLocation.getLocation());
             }
 
             Picasso.with(this)
@@ -218,12 +229,16 @@ public class EditActivityNext extends AddEditActivityNext {
             StoreFileLocation storeFileLocationInit = mHmInitPhoto.get(entry.getKey());
             if ((storeFileLocationInit == null && storeFileLocation != null) ||
                     (storeFileLocationInit != null && storeFileLocation != null && !storeFileLocationInit.getFileName().equals(storeFileLocation.getFileName()))) {
-                File image = new File(storeFileLocation.getLocation());
-                if (image.exists()) {
-                    image.delete();
-                    Logger.log("[clearPhotos] Filename: " + storeFileLocation.getFileName() + " is deleted.");
-                }
+                deleteImageByPath(storeFileLocation.getLocation());
             }
+        }
+    }
+
+    private void deleteImageByPath(String path) {
+        File image = new File(path);
+        if (image.exists()) {
+            image.delete();
+            Logger.log("[deleteImageByPath] Path: " + path + " is deleted.");
         }
     }
 }

@@ -54,6 +54,13 @@ public class UploadActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         MyLocalPhotos myLocalPhotos = Session.getLocalPhotos(this);
+        for (StoreFileLocation storeFileLocation : myLocalPhotos.getPhotos()) {
+            if (storeFileLocation == null) {
+                Logger.log("Storefilelocation is null.");
+            } else {
+                Logger.log("Path: " + storeFileLocation.getLocation());
+            }
+        }
         mDataSet = myLocalPhotos.getPhotos();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);

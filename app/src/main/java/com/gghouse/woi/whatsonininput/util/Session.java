@@ -9,12 +9,14 @@ import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
+import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_CATEGORIES;
@@ -321,14 +323,20 @@ public abstract class Session {
         Prefser prefser = new Prefser(context);
 
         MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        List<StoreFileLocation> storeFileLocationsToBeDeleted = new ArrayList<StoreFileLocation>();
         for (StoreFileLocation storeFileLocation : myLocalPhotos.getPhotos()) {
             if (storeFileLocation.getFileName().startsWith("IMG_" + storeId + "_")) {
-                myLocalPhotos.getPhotos().remove(storeFileLocation);
-                Logger.log("[Session] Filename: " + storeFileLocation.getFileName() + " with path: " + storeFileLocation.getLocation() + " is deleted.");
+                storeFileLocationsToBeDeleted.add(storeFileLocation);
             }
         }
 
-        myLocalPhotos.getPhotos().addAll(storeFileLocationList);
+        myLocalPhotos.getPhotos().removeAll(storeFileLocationsToBeDeleted);
+
+        for (StoreFileLocation storeFileLocation : storeFileLocationList) {
+            if (storeFileLocation != null) {
+                myLocalPhotos.getPhotos().add(storeFileLocation);
+            }
+        }
 
         prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
     }
@@ -337,5 +345,12 @@ public abstract class Session {
         Prefser prefser = new Prefser(context);
 
         prefser.remove(SP_LOCAL_PHOTOS);
+    }
+
+    public static void removeNullFromLocalPhotos(Context context) {
+        Prefser prefser = new Prefser(context);
+        MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        myLocalPhotos.getPhotos().removeAll(Collections.singleton(null));
+        prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
     }
 }

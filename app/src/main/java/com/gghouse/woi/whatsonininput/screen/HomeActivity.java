@@ -71,7 +71,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         /*
          * Session Manager to update ip address.
          */

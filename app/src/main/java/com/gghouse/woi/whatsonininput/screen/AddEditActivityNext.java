@@ -32,7 +32,7 @@ import pl.tajchert.nammu.PermissionCallback;
 
 public abstract class AddEditActivityNext extends AppCompatActivity {
 
-    protected final String tempPhotoName = "${temp}";
+    protected String tempPhotoName = "${temp}";
 
     /*
      * Photos
@@ -169,7 +169,7 @@ public abstract class AddEditActivityNext extends AppCompatActivity {
 
         if (requestCode == Camera.REQUEST_TAKE_PHOTO) {
             if (mCamera.getCameraBitmap() != null) {
-                postPhoto(this.idx, tempFilename, mCamera.getCameraBitmapPath());
+                postPhoto(this.idx, tempFilename+".JPG", mCamera.getCameraBitmapPath());
                 mCamera = null;
             }
         }
