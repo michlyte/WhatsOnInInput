@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
@@ -91,6 +92,12 @@ public class AddActivityNext extends AddEditActivityNext {
     }
 
     private void ws_createStore(String district, String name, String description, String address, String phoneNumber, String web, String email, String floor, String blockNumber, String tags) {
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.prompt_sending)
+                .content(R.string.prompt_please_wait)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
         /*
          * Create reqeuest
          */
@@ -113,9 +120,10 @@ public class AddActivityNext extends AddEditActivityNext {
         callCreateStore.enqueue(new Callback<StoreCreateResponse>() {
             @Override
             public void onResponse(Call<StoreCreateResponse> call, Response<StoreCreateResponse> response) {
+                materialDialog.dismiss();
+
                 StoreCreateResponse storeCreateResponse = response.body();
                 if (storeCreateResponse.getCode() == Config.CODE_200) {
-
                     for (Map.Entry<Integer, StoreFileLocation> entry : mHmPhoto.entrySet()) {
                         StoreFileLocation storeFileLocation = entry.getValue();
                         if (storeFileLocation != null) {
@@ -154,6 +162,7 @@ public class AddActivityNext extends AddEditActivityNext {
 
             @Override
             public void onFailure(Call<StoreCreateResponse> call, Throwable t) {
+                materialDialog.dismiss();
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });

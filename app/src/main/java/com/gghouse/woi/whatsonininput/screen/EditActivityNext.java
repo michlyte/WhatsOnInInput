@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
@@ -18,7 +19,6 @@ import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreEditResponse;
-import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -147,6 +147,13 @@ public class EditActivityNext extends AddEditActivityNext {
                              String address, String phoneNumber, String web, String email,
                              String floor, String blockNumber, String tags) {
 
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.prompt_sending)
+                .content(R.string.prompt_please_wait)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
+
         mStore.setDistrict(district);
         mStore.setName(name);
         mStore.setDescription(description);
@@ -162,6 +169,8 @@ public class EditActivityNext extends AddEditActivityNext {
         callStoreListLoadMore.enqueue(new Callback<StoreEditResponse>() {
             @Override
             public void onResponse(Call<StoreEditResponse> call, Response<StoreEditResponse> response) {
+                materialDialog.dismiss();
+
                 StoreEditResponse storeListResponse = response.body();
                 switch (storeListResponse.getCode()) {
                     case Config.CODE_200:
@@ -190,6 +199,7 @@ public class EditActivityNext extends AddEditActivityNext {
 
             @Override
             public void onFailure(Call<StoreEditResponse> call, Throwable t) {
+                materialDialog.dismiss();
                 Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
             }
         });

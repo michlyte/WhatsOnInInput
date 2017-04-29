@@ -181,10 +181,19 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
     @Override
     public void onClick(Store store) {
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.prompt_retrieving)
+                .content(R.string.prompt_please_wait)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
+
         Call<StoreGetResponse> callStoreGet = ApiClient.getClient().getStore(store.getStoreId());
         callStoreGet.enqueue(new Callback<StoreGetResponse>() {
             @Override
             public void onResponse(Call<StoreGetResponse> call, Response<StoreGetResponse> response) {
+                materialDialog.dismiss();
+
                 StoreGetResponse storeGetResponse = response.body();
                 if (storeGetResponse.getCode() == Config.CODE_200) {
                     Intent iEditActivity = new Intent(getApplicationContext(), EditActivityNext.class);
@@ -197,6 +206,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
             @Override
             public void onFailure(Call<StoreGetResponse> call, Throwable t) {
+                materialDialog.dismiss();
                 Logger.log(Config.ON_FAILURE + " : " + t.getMessage());
             }
         });

@@ -31,6 +31,10 @@
     <string name="prompt_floor">Floor</string>
     <string name="prompt_tags">Tags</string>
     <string name="prompt_init_camera">Field name harus diisi terlebih dahulu</string>
+    <string name="prompt_please_wait">Please wait</string>
+    <string name="prompt_progress_dialog">Progress Dialog</string>
+    <string name="prompt_sending">Sending</string>
+    <string name="prompt_retrieving">Retrieving</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>

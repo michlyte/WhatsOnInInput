@@ -12,6 +12,7 @@ import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
@@ -119,10 +120,19 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void ws_uploadPhoto(List<StoreFileLocation> storeFileLocationList) {
+        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+                .title(R.string.prompt_sending)
+                .content(R.string.prompt_please_wait)
+                .progress(true, 0)
+                .progressIndeterminateStyle(true)
+                .show();
+
         Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
         callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
             @Override
             public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
+                materialDialog.dismiss();
+
                 StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
                 switch (storeUploadPhotosResponse.getCode()) {
                     case Config.CODE_200:
@@ -137,6 +147,7 @@ public class UploadActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
+                materialDialog.dismiss();
                 Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
             }
         });
