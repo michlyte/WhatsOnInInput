@@ -116,11 +116,24 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             .into(homeViewHolder.ivImage);
                     break;
                 default:
-                    Picasso.with(mContext)
-                            .load((store.getDrawable() != null ? store.getDrawable() : R.drawable.no_image))
-                            .fit()
-                            .centerInside()
-                            .into(homeViewHolder.ivImage);
+                    String url = null;
+                    if (store.getPhotos().size() > 0) {
+                        url = store.getPhotos().get(0).getUrl();
+                    }
+
+                    if (url == null || url.isEmpty()) {
+                        Picasso.with(mContext)
+                                .load(R.drawable.no_image)
+                                .fit()
+                                .centerInside()
+                                .into(homeViewHolder.ivImage);
+                    } else {
+                        Picasso.with(mContext)
+                                .load(url)
+                                .fit()
+                                .centerInside()
+                                .into(homeViewHolder.ivImage);
+                    }
                     break;
             }
 

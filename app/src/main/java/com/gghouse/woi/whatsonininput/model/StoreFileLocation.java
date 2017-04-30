@@ -16,6 +16,7 @@ public class StoreFileLocation implements Serializable {
     protected Long createdOn;
     protected String updatedBy;
     protected String updatedOn;
+    protected String url;
     private String strImgBase64;
 
     // Default true
@@ -117,6 +118,14 @@ public class StoreFileLocation implements Serializable {
 
     public void setStrImgBase64(String strImgBase64) {
         this.strImgBase64 = strImgBase64;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public boolean isLocal() {
