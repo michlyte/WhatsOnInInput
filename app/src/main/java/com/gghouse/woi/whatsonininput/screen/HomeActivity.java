@@ -44,6 +44,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
     static final int ADD_RESPONSE = 99;
     static final int EDIT_RESPONSE = 98;
+    static final int UPLOAD_RESPONSE = 97;
     static final String sort = "storeId,desc";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -168,7 +169,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 return true;
             case R.id.action_upload:
                 Intent uploadActivity = new Intent(this, UploadActivity.class);
-                startActivity(uploadActivity);
+                startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
                 break;
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);
@@ -243,6 +244,13 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                         } else {
                             Logger.log("Error: Edited data is not found on your list.");
                         }
+                        break;
+                }
+                break;
+            case UPLOAD_RESPONSE:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        ws_getStores(HomeMode.REFRESH);
                         break;
                 }
                 break;
