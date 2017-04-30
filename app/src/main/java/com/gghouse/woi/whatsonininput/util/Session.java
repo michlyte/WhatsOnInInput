@@ -9,7 +9,6 @@ import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
-import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
@@ -333,7 +332,7 @@ public abstract class Session {
         myLocalPhotos.getPhotos().removeAll(storeFileLocationsToBeDeleted);
 
         for (StoreFileLocation storeFileLocation : storeFileLocationList) {
-            if (storeFileLocation != null) {
+            if (storeFileLocation != null && storeFileLocation.isLocal()) {
                 myLocalPhotos.getPhotos().add(storeFileLocation);
             }
         }
