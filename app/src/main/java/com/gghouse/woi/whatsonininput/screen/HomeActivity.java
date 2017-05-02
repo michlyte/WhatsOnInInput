@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
@@ -31,6 +32,7 @@ import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreGetResponse;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreListResponse;
+import com.path.android.jobqueue.JobManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,12 +68,17 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
     private List<Store> mDataSet;
 
+    JobManager mJobManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mJobManager = WOIInputApplication.getInstance().getJobManager();
+
         /*
          * Session Manager to update ip address.
          */
@@ -168,8 +175,12 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 }
                 return true;
             case R.id.action_upload:
-                Intent uploadActivity = new Intent(this, UploadActivity.class);
-                startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
+                if (mJobManager.count() > 0) {
+
+                } else {
+                    Intent uploadActivity = new Intent(this, UploadActivityNext.class);
+                    startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
+                }
                 break;
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);

@@ -4,8 +4,10 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".WOIInputApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,6 +17,10 @@
         <activity android:name=".screen.EditActivityNext" />
         <activity
             android:name=".screen.UploadActivity"
+            android:label="@string/title_activity_upload"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".screen.UploadActivityNext"
             android:label="@string/title_activity_upload"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

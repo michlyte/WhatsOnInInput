@@ -3,7 +3,6 @@ package com.gghouse.woi.whatsonininput.screen;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,14 +10,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.job.UploadPhotosJob;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.ImageHelper;
@@ -26,11 +26,8 @@ import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
+import com.path.android.jobqueue.JobManager;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,12 +38,13 @@ import retrofit2.Response;
  * Created by michael on 3/29/2017.
  */
 
-public class UploadActivity extends AppCompatActivity {
+public class UploadActivityNext extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private UploadAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
     private List<StoreFileLocation> mDataSet;
+    JobManager mJobManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +52,8 @@ public class UploadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upload);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mJobManager = WOIInputApplication.getInstance().getJobManager();
 
         MyLocalPhotos myLocalPhotos = Session.getLocalPhotos(this);
         for (StoreFileLocation storeFileLocation : myLocalPhotos.getPhotos()) {
@@ -105,75 +105,11 @@ public class UploadActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_send:
-                new UploadImageTask(this).execute();
+                for (StoreFileLocation storeFileLocation: mDataSet) {
+                    mJobManager.addJobInBackground(new UploadPhotosJob(storeFileLocation));
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    class UploadImageTask extends AsyncTask<Void, Integer, Void> {
-
-        private Context context;
-        private MaterialDialog materialDialog;
-
-        public UploadImageTask(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            materialDialog = new MaterialDialog.Builder(context)
-                    .title(R.string.prompt_sending)
-                    .content(R.string.prompt_please_wait)
-                    .progress(true, 0)
-                    .progressIndeterminateStyle(true)
-                    .show();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            for (int i = 0; i < mDataSet.size(); i++) {
-                Bitmap bitmap = ImageHelper.loadImageFromStorage(mDataSet.get(i).getLocation());
-                if (bitmap != null) {
-                    mDataSet.get(i).setStrImgBase64(ImageHelper.convertBitmapToString(bitmap));
-                } else {
-                    Logger.log("Filename: " + mDataSet.get(i).getFileName() + ", path: " + mDataSet.get(i).getLocation() + " is not existed.");
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(mDataSet);
-            callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
-                @Override
-                public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
-                    materialDialog.dismiss();
-
-                    StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
-                    switch (storeUploadPhotosResponse.getCode()) {
-                        case Config.CODE_200:
-//                            Session.clearLocalPhotos(getApplicationContext());
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                            break;
-                        default:
-                            Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
-                            break;
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
-                    materialDialog.dismiss();
-                    Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
-                }
-            });
-        }
     }
 }

@@ -9,6 +9,7 @@ import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
+import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
@@ -337,6 +338,19 @@ public abstract class Session {
             }
         }
 
+        prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
+    }
+
+    public static void removeLocalPhoto(Context context, StoreFileLocation storeFileLocation) {
+        Prefser prefser = new Prefser(context);
+
+        MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
+        for (StoreFileLocation sfl: myLocalPhotos.getPhotos()) {
+            if (sfl.getFileName().equals(storeFileLocation.getFileName())) {
+                myLocalPhotos.getPhotos().remove(sfl);
+                break;
+            }
+        }
         prefser.put(SP_LOCAL_PHOTOS, myLocalPhotos);
     }
 

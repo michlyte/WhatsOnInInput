@@ -41,5 +41,6 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.3.0'
     compile 'com.mindorks:paracamera:0.2.2'
     compile 'com.github.medyo:dynamicbox:1.2@aar'
+    compile 'com.path:android-priority-jobqueue:1.1.2'
     testCompile 'junit:junit:4.12'
 }
