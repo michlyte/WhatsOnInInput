@@ -2,11 +2,6 @@
     <string name="app_name">WhatsOnInInput</string>
     <string name="app_short_name">WOIInput</string>
 
-    <string name="prompt_daerah">Daerah</string>
-    <string name="prompt_kompleks">Kompleks</string>
-    <string name="prompt_developer">Developer</string>
-    <string name="prompt_alamat">Alamat</string>
-    <string name="prompt_telepon">Telepon</string>
     <string name="prompt_web">Web</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_city">City</string>
@@ -35,6 +30,9 @@
     <string name="prompt_progress_dialog">Progress Dialog</string>
     <string name="prompt_sending">Sending</string>
     <string name="prompt_retrieving">Retrieving</string>
+    <string name="prompt_pemberitahuan">Pemberitahuan</string>
+    <string name="prompt_upload_in_progress">Upload gambar sedang berjalan. Silahkan tunggu sampai selesai.</string>
+    <string name="prompt_ok">OK</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>

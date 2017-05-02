@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,6 +69,9 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
     private List<Store> mDataSet;
 
+    /*
+     * Job Manager
+     */
     JobManager mJobManager;
 
     @Override
@@ -176,7 +180,17 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 return true;
             case R.id.action_upload:
                 if (mJobManager.count() > 0) {
-
+                    new MaterialDialog.Builder(this)
+                            .title(R.string.prompt_pemberitahuan)
+                            .content(R.string.prompt_upload_in_progress)
+                            .positiveColorRes(R.color.colorPrimary)
+                            .positiveText(R.string.prompt_ok)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                }
+                            })
+                            .show();
                 } else {
                     Intent uploadActivity = new Intent(this, UploadActivityNext.class);
                     startActivityForResult(uploadActivity, UPLOAD_RESPONSE);

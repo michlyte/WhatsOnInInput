@@ -108,6 +108,8 @@ public class UploadActivityNext extends AppCompatActivity {
                 for (StoreFileLocation storeFileLocation: mDataSet) {
                     mJobManager.addJobInBackground(new UploadPhotosJob(storeFileLocation));
                 }
+                setResult(Activity.RESULT_OK);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
