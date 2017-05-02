@@ -111,49 +111,49 @@ public class UploadActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void ws_uploadPhoto(List<StoreFileLocation> storeFileLocationList) {
-        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
-                .title(R.string.prompt_sending)
-                .content(R.string.prompt_please_wait)
-                .progress(true, 0)
-                .progressIndeterminateStyle(true)
-                .show();
-
-        for (int i = 0; i < mDataSet.size(); i++) {
-            Bitmap bitmap = loadImageFromStorage(mDataSet.get(i).getLocation());
-            if (bitmap != null) {
-                mDataSet.get(i).setStrImgBase64(convert(bitmap));
-            } else {
-                Logger.log("Filename: " + mDataSet.get(i).getFileName() + ", path: " + mDataSet.get(i).getLocation() + " is not existed.");
-            }
-        }
-
-        Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
-        callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
-            @Override
-            public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
-                materialDialog.dismiss();
-
-                StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
-                switch (storeUploadPhotosResponse.getCode()) {
-                    case Config.CODE_200:
-                        Session.clearLocalPhotos(getApplicationContext());
-                        setResult(Activity.RESULT_OK);
-                        finish();
-                        break;
-                    default:
-                        Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
-                materialDialog.dismiss();
-                Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
-            }
-        });
-    }
+//    private void ws_uploadPhoto(List<StoreFileLocation> storeFileLocationList) {
+//        final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
+//                .title(R.string.prompt_sending)
+//                .content(R.string.prompt_please_wait)
+//                .progress(true, 0)
+//                .progressIndeterminateStyle(true)
+//                .show();
+//
+//        for (int i = 0; i < mDataSet.size(); i++) {
+//            Bitmap bitmap = loadImageFromStorage(mDataSet.get(i).getLocation());
+//            if (bitmap != null) {
+//                mDataSet.get(i).setStrImgBase64(convert(bitmap));
+//            } else {
+//                Logger.log("Filename: " + mDataSet.get(i).getFileName() + ", path: " + mDataSet.get(i).getLocation() + " is not existed.");
+//            }
+//        }
+//
+//        Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
+//        callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
+//            @Override
+//            public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
+//                materialDialog.dismiss();
+//
+//                StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
+//                switch (storeUploadPhotosResponse.getCode()) {
+//                    case Config.CODE_200:
+//                        Session.clearLocalPhotos(getApplicationContext());
+//                        setResult(Activity.RESULT_OK);
+//                        finish();
+//                        break;
+//                    default:
+//                        Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
+//                materialDialog.dismiss();
+//                Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
+//            }
+//        });
+//    }
 
     private String convert(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
