@@ -13,23 +13,28 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".screen.AddActivity" />
-        <activity android:name=".screen.EditActivity" />
         <activity
-            android:name=".screen.UploadActivity"
-            android:label="@string/title_activity_upload"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".screen.AddActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".screen.EditActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".screen.UploadActivityNext"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/title_activity_upload"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".screen.HomeActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_short_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
