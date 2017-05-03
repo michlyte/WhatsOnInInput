@@ -362,7 +362,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     }
 
     private boolean showUploadActivity() {
-        if (mJobManager.count() > 0) {
+        if (Session.isUploading()) {
             new MaterialDialog.Builder(this)
                     .title(R.string.prompt_pemberitahuan)
                     .content(R.string.prompt_upload_in_progress)
@@ -377,7 +377,8 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         } else {
             Intent uploadActivity = new Intent(this, UploadActivityNext.class);
             startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
-        } return true;
+        }
+        return true;
     }
 
     private boolean showChangeIPDialog() {

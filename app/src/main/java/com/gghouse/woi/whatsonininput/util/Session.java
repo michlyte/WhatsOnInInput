@@ -3,6 +3,7 @@ package com.gghouse.woi.whatsonininput.util;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
+import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.SessionParam;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
@@ -25,6 +26,7 @@ import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITY_ID;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_LOCAL_PHOTOS;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_TYPE;
+import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_UPLOADING;
 
 /**
  * Created by michael on 3/22/2017.
@@ -259,6 +261,25 @@ public abstract class Session {
                     Logger.log("Key [" + SP_AREA_NAME_CATEGORY_ID + "] is removed.");
                 }
             }
+        }
+    }
+
+    /*
+     * Uploading
+     */
+
+    public static void setUploading(boolean value) {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+        prefser.put(SP_UPLOADING, value);
+    }
+
+    public static boolean isUploading() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+
+        if (prefser.contains(SP_UPLOADING)) {
+            return prefser.get(SP_UPLOADING, Boolean.class, SessionParam.INIT_VALUE_UPLOADING);
+        } else {
+            return SessionParam.INIT_VALUE_UPLOADING;
         }
     }
 

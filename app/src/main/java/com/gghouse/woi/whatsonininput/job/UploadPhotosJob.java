@@ -46,9 +46,9 @@ public class UploadPhotosJob extends Job {
             StoreUploadPhotosResponse storeUploadPhotosResponse = callUploadPhotos.execute().body();
             switch (storeUploadPhotosResponse.getCode()) {
                 case Config.CODE_200:
-                    Session.removeLocalPhoto(WOIInputApplication.getAppContext(), mStoreFileLocation);
+                    Session.removeLocalPhoto(WOIInputApplication.getInstance().getAppContext(), mStoreFileLocation);
                     if (WOIInputApplication.getInstance().getJobManager().count() == 0) {
-                        Logger.log("This is the last.");
+                        Session.setUploading(false);
                     }
                     break;
                 default:

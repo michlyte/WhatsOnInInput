@@ -1,9 +1,6 @@
 package com.gghouse.woi.whatsonininput.screen;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.adapter.UploadAdapter;
@@ -21,18 +17,11 @@ import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.job.UploadPhotosJob;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
-import com.gghouse.woi.whatsonininput.util.ImageHelper;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
-import com.gghouse.woi.whatsonininput.webservices.ApiClient;
-import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
 import com.path.android.jobqueue.JobManager;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by michael on 3/29/2017.
@@ -105,6 +94,7 @@ public class UploadActivityNext extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_send:
+                Session.setUploading(true);
                 for (StoreFileLocation storeFileLocation: mDataSet) {
                     mJobManager.addJobInBackground(new UploadPhotosJob(storeFileLocation));
                 }

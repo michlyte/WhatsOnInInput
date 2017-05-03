@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.github.pwittchen.prefser.library.Prefser;
 import com.path.android.jobqueue.JobManager;
 import com.path.android.jobqueue.config.Configuration;
 import com.path.android.jobqueue.log.CustomLogger;
@@ -15,6 +16,7 @@ import com.path.android.jobqueue.log.CustomLogger;
 public class WOIInputApplication extends Application {
     private static WOIInputApplication instance;
     private static Context context;
+    private static Prefser prefser;
     private JobManager jobManager;
 
     public WOIInputApplication() {
@@ -25,6 +27,7 @@ public class WOIInputApplication extends Application {
     public void onCreate() {
         super.onCreate();
         WOIInputApplication.context = getApplicationContext();
+        prefser = new Prefser(getApplicationContext());
         configureJobManager();
     }
 
@@ -69,7 +72,11 @@ public class WOIInputApplication extends Application {
         return instance;
     }
 
-    public static Context getAppContext() {
+    public Context getAppContext() {
         return WOIInputApplication.context;
+    }
+
+    public Prefser getPrefser() {
+        return prefser;
     }
 }
