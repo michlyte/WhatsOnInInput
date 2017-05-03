@@ -20,6 +20,8 @@ public interface SessionParam {
     long INIT_VALUE_AREA_NAME_ID = 1L;
 
 //    String SP_PHOTOS = "SP_PHOTOS";
-    String SP_STORE_FILE_LOCATION = "SP_STORE_FILE_LOCATION";
     String SP_LOCAL_PHOTOS = "SP_LOCAL_PHOTOS";
+
+    String SP_TYPE = "SP_TYPE";
+    int INIT_VALUE_TYPE = 0;
 }

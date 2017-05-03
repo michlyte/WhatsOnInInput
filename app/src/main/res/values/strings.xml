@@ -49,4 +49,9 @@
 
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_email">This email address is invalid</string>
+
+    <string-array name="TypeArr">
+        <item>indoor</item>
+        <item>outdoor</item>
+    </string-array>
 </resources>

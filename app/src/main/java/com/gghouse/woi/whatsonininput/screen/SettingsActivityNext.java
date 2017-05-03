@@ -11,6 +11,7 @@ import android.widget.Spinner;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
+import com.gghouse.woi.whatsonininput.common.Type;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
@@ -31,6 +32,9 @@ import retrofit2.Response;
 
 public class SettingsActivityNext extends AppCompatActivity {
     private Spinner mSType;
+    private ArrayAdapter<Type> mAdapterType;
+    private List<Type> mListType;
+    private Integer mTypeId;
 
     private Spinner mSCity;
     private ArrayAdapter<City> mAdapterCity;
@@ -136,6 +140,22 @@ public class SettingsActivityNext extends AppCompatActivity {
             }
         });
 
+        mListType = new ArrayList<Type>();
+        mSType = (Spinner) findViewById(R.id.s_type);
+        mAdapterType = new ArrayAdapter<Type>(this, android.R.layout.simple_spinner_dropdown_item, mListType);
+        mSType.setAdapter(mAdapterType);
+        mSType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Session.saveTypeId(getApplicationContext(), mListType.get(position).getId());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         /*
          * Populate data
          */
@@ -157,10 +177,13 @@ public class SettingsActivityNext extends AppCompatActivity {
             setSpinnerSelection(Settings.AREA_CATEGORY);
         }
 
+        mListType.addAll(Arrays.asList(Type.values()));
+        mAdapterType.notifyDataSetChanged();
+        setSpinnerSelection(Settings.TYPE);
+
         /*
          * Debug
          */
-        Logger.log("IPAddress: " + Session.getIpAddress(this));
         Logger.log("CityId: " + Session.getCityId(this));
         Logger.log("AreaCategoryId: " + Session.getAreaCategoryId(this));
         Logger.log("AreaNameId: " + Session.getAreaNameId(this));
@@ -170,7 +193,7 @@ public class SettingsActivityNext extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                return true;
+                return false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -215,6 +238,19 @@ public class SettingsActivityNext extends AppCompatActivity {
                     }
                 }
                 mSAreaName.setSelection(initAreaNamePosition);
+                break;
+            case TYPE:
+                Logger.log("Type: " + mListCity.toString());
+                Logger.log("GetTypeId: " + Session.getTypeId(this));
+                mTypeId = Session.getTypeId(this);
+                int initTypePosition = 0;
+                for (int i = 0; i < mListType.size(); i++) {
+                    if (mListType.get(i).getId() == mTypeId) {
+                        initTypePosition = i;
+                        break;
+                    }
+                }
+                mSType.setSelection(initTypePosition);
                 break;
         }
     }
@@ -308,6 +344,7 @@ public class SettingsActivityNext extends AppCompatActivity {
     private enum Settings {
         CITY,
         AREA_CATEGORY,
-        AREA_NAME;
+        AREA_NAME,
+        TYPE;
     }
 }

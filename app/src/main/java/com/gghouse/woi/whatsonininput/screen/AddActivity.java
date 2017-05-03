@@ -147,13 +147,6 @@ public class AddActivity extends AddEditActivity {
                             Session.saveLocalPhoto(getApplicationContext(), storeFileLocation);
                         }
                     }
-
-                    StoreFileLocation[] storeFileLocations = Session.getPhotos(getApplicationContext());
-                    int count = 0;
-                    for (StoreFileLocation storeFileLocation : storeFileLocations) {
-                        System.out.println(++count + ". Filename: " + storeFileLocation.getFileName() + ", path: " + storeFileLocation.getLocation());
-                    }
-
                     setResult(Activity.RESULT_OK);
                     finish();
                 } else {

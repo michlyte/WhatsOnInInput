@@ -9,13 +9,11 @@ import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.MyLocalPhotos;
-import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.github.pwittchen.prefser.library.Prefser;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,7 @@ import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME_ID
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITY_ID;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_LOCAL_PHOTOS;
-import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_STORE_FILE_LOCATION;
+import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_TYPE;
 
 /**
  * Created by michael on 3/22/2017.
@@ -154,6 +152,26 @@ public abstract class Session {
         prefser.put(SP_AREA_CATEGORIES, areaCategories);
     }
 
+    public static void saveTypeId(Context context, Integer typeId) {
+        Prefser prefser = new Prefser(context);
+
+        if (typeId != null) {
+            prefser.put(SP_TYPE, typeId);
+        } else {
+            Logger.log("saveType is null.");
+        }
+    }
+
+    public static Integer getTypeId(Context context) {
+        Prefser prefser = new Prefser(context);
+
+        if (prefser.contains(SP_TYPE)) {
+            return prefser.get(SP_TYPE, Integer.class, SessionParam.INIT_VALUE_TYPE);
+        } else {
+            return SessionParam.INIT_VALUE_TYPE;
+        }
+    }
+
     @Nullable
     public static AreaCategory[] getAreaCategories(Context context) {
         Prefser prefser = new Prefser(context);
@@ -242,46 +260,6 @@ public abstract class Session {
                 }
             }
         }
-    }
-
-    public static void addPhoto(Context context, StoreFileLocation photoPath) {
-        Prefser prefser = new Prefser(context);
-
-        StoreFileLocation[] photoPathArr = getPhotos(context);
-        if (photoPathArr.length > 0) {
-            List<StoreFileLocation> photoPathList = new ArrayList<StoreFileLocation>();
-            photoPathList.addAll(Arrays.asList(photoPathArr));
-            photoPathList.add(photoPath);
-            StoreFileLocation[] photoPathArrUpdated = new StoreFileLocation[photoPathList.size()];
-            photoPathList.toArray(photoPathArrUpdated);
-            prefser.put(SP_STORE_FILE_LOCATION, photoPathArrUpdated);
-        } else {
-            prefser.put(SP_STORE_FILE_LOCATION, new StoreFileLocation[]{photoPath});
-        }
-    }
-
-    public static void updatePhotos(Context context, StoreFileLocation photoPath) {
-        Prefser prefser = new Prefser(context);
-
-        StoreFileLocation[] storeFileLocations = getPhotos(context);
-
-        for (int i = 0; i < storeFileLocations.length; i++) {
-            if (storeFileLocations[i].getLocation().equals(photoPath.getLocation())) {
-                storeFileLocations[i] = photoPath;
-                prefser.put(SP_STORE_FILE_LOCATION, storeFileLocations);
-                break;
-            }
-        }
-    }
-
-    public static StoreFileLocation[] getPhotos(Context context) {
-        Prefser prefser = new Prefser(context);
-
-        StoreFileLocation[] photoPath = new StoreFileLocation[]{};
-        if (prefser.contains(SP_STORE_FILE_LOCATION)) {
-            photoPath = prefser.get(SP_STORE_FILE_LOCATION, StoreFileLocation[].class, new StoreFileLocation[]{});
-        }
-        return photoPath;
     }
 
     /*
