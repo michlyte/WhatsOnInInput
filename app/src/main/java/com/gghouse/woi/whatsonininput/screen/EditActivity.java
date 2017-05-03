@@ -15,6 +15,7 @@ import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
 import com.gghouse.woi.whatsonininput.model.Store;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
+import com.gghouse.woi.whatsonininput.screen.abtract.AddEditActivity;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
@@ -35,7 +36,7 @@ import retrofit2.Response;
  * Created by michael on 3/29/2017.
  */
 
-public class EditActivityNext extends AddEditActivityNext {
+public class EditActivity extends AddEditActivity {
     private Store mStore;
     private HashMap<Integer, StoreFileLocation> mHmInitPhoto;
 

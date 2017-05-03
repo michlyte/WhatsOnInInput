@@ -1,4 +1,4 @@
-package com.gghouse.woi.whatsonininput.screen;
+package com.gghouse.woi.whatsonininput.screen.abtract;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,7 +30,7 @@ import pl.tajchert.nammu.PermissionCallback;
  * Created by michael on 3/29/2017.
  */
 
-public abstract class AddEditActivityNext extends AppCompatActivity {
+public abstract class AddEditActivity extends AppCompatActivity {
 
     protected String tempPhotoName = "${temp}";
 

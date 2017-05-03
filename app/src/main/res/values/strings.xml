@@ -33,6 +33,7 @@
     <string name="prompt_pemberitahuan">Pemberitahuan</string>
     <string name="prompt_upload_in_progress">Upload gambar sedang berjalan. Silahkan tunggu sampai selesai.</string>
     <string name="prompt_ok">OK</string>
+    <string name="prompt_type">Type</string>
 
     <string name="action_next">Next</string>
     <string name="action_settings">Settings</string>

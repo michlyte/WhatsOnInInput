@@ -155,7 +155,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
             case R.id.action_change_ip:
                 return showChangeIPDialog();
             case R.id.action_settings:
-                Intent settingsActivity = new Intent(this, SettingsActivity.class);
+                Intent settingsActivity = new Intent(this, SettingsActivityNext.class);
                 startActivity(settingsActivity);
                 return true;
         }
@@ -180,7 +180,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
                 StoreGetResponse storeGetResponse = response.body();
                 if (storeGetResponse.getCode() == Config.CODE_200) {
-                    Intent iEditActivity = new Intent(getApplicationContext(), EditActivityNext.class);
+                    Intent iEditActivity = new Intent(getApplicationContext(), EditActivity.class);
                     iEditActivity.putExtra(IntentParam.STORE, storeGetResponse.getData());
                     startActivityForResult(iEditActivity, EDIT_RESPONSE);
                 } else {
@@ -352,7 +352,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     })
                     .show();
         } else {
-            Intent iAddActivity = new Intent(this, AddActivityNext.class);
+            Intent iAddActivity = new Intent(this, AddActivity.class);
             iAddActivity.putExtra(IntentParam.CITY, city);
             iAddActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
             iAddActivity.putExtra(IntentParam.AREA_NAME, areaName);

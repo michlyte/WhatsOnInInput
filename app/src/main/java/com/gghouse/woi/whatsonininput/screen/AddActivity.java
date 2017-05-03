@@ -17,6 +17,7 @@ import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
+import com.gghouse.woi.whatsonininput.screen.abtract.AddEditActivity;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
@@ -31,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddActivityNext extends AddEditActivityNext {
+public class AddActivity extends AddEditActivity {
     private City mCity;
     private AreaCategory mAreaCategory;
     private AreaName mAreaName;
