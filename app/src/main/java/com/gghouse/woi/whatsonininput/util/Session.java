@@ -323,8 +323,9 @@ public abstract class Session {
         Prefser prefser = new Prefser(context);
 
         MyLocalPhotos myLocalPhotos = getLocalPhotos(context);
-        for (StoreFileLocation sfl: myLocalPhotos.getPhotos()) {
+        for (StoreFileLocation sfl : myLocalPhotos.getPhotos()) {
             if (sfl.getFileName().equals(storeFileLocation.getFileName())) {
+                Logger.log("[removeLocalPhoto] Filename: " + storeFileLocation.getFileName() + " is removed.");
                 myLocalPhotos.getPhotos().remove(sfl);
                 break;
             }

@@ -5,6 +5,7 @@ import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.ImageHelper;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
 import com.gghouse.woi.whatsonininput.webservices.response.StoreUploadPhotosResponse;
 import com.path.android.jobqueue.Job;
@@ -45,7 +46,7 @@ public class UploadPhotosJob extends Job {
             StoreUploadPhotosResponse storeUploadPhotosResponse = callUploadPhotos.execute().body();
             switch (storeUploadPhotosResponse.getCode()) {
                 case Config.CODE_200:
-//                    Session.removeLocalPhoto(WOIInputApplication.getAppContext(), mStoreFileLocation);
+                    Session.removeLocalPhoto(WOIInputApplication.getAppContext(), mStoreFileLocation);
                     if (WOIInputApplication.getInstance().getJobManager().count() == 0) {
                         Logger.log("This is the last.");
                     }
