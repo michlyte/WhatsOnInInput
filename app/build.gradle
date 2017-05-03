@@ -42,5 +42,6 @@ dependencies {
     compile 'com.mindorks:paracamera:0.2.2'
     compile 'com.github.medyo:dynamicbox:1.2@aar'
     compile 'com.path:android-priority-jobqueue:1.1.2'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

@@ -40,6 +40,7 @@
     <string name="action_add">Add</string>
     <string name="action_send">Send</string>
     <string name="action_edit">Edit</string>
+    <string name="action_change_ip">Change IP</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>

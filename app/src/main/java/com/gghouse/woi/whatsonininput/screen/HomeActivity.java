@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -42,6 +42,8 @@ import mehdi.sakout.dynamicbox.DynamicBox;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.gghouse.woi.whatsonininput.util.Session.getIpAddress;
 
 public class HomeActivity extends AppCompatActivity implements HomeOnClickListener {
 
@@ -86,7 +88,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         /*
          * Session Manager to update ip address.
          */
-        ApiClient.generateClientWithNewIP(Session.getIpAddress(this));
+        ApiClient.generateClientWithNewIP(getIpAddress(this));
 
         mDataSet = new ArrayList<Store>();
 
@@ -147,55 +149,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
         switch (item.getItemId()) {
             case R.id.action_add:
-                boolean cancel = false;
-
-                City city = Session.getCity(this);
-                AreaCategory areaCategory = Session.getAreaCategory(this);
-                AreaName areaName = Session.getAreaName(this);
-
-                if (city == null || areaCategory == null || areaName == null) {
-                    cancel = true;
-                }
-
-                if (cancel) {
-                    new MaterialDialog.Builder(this)
-                            .title(R.string.prompt_perhatian)
-                            .content(R.string.prompt_pengaturan_prekondisi)
-                            .positiveColorRes(R.color.colorPrimary)
-                            .positiveText(R.string.prompt_setuju)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
-                                }
-                            })
-                            .show();
-                } else {
-                    Intent iAddActivity = new Intent(this, AddActivityNext.class);
-                    iAddActivity.putExtra(IntentParam.CITY, city);
-                    iAddActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
-                    iAddActivity.putExtra(IntentParam.AREA_NAME, areaName);
-                    startActivityForResult(iAddActivity, ADD_RESPONSE);
-                }
-                return true;
+                return showAddActivity();
             case R.id.action_upload:
-                if (mJobManager.count() > 0) {
-                    new MaterialDialog.Builder(this)
-                            .title(R.string.prompt_pemberitahuan)
-                            .content(R.string.prompt_upload_in_progress)
-                            .positiveColorRes(R.color.colorPrimary)
-                            .positiveText(R.string.prompt_ok)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                }
-                            })
-                            .show();
-                } else {
-                    Intent uploadActivity = new Intent(this, UploadActivityNext.class);
-                    startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
-                }
-                break;
+                return showUploadActivity();
+            case R.id.action_change_ip:
+                return showChangeIPDialog();
             case R.id.action_settings:
                 Intent settingsActivity = new Intent(this, SettingsActivity.class);
                 startActivity(settingsActivity);
@@ -367,5 +325,79 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private enum HomeMode {
         REFRESH,
         LOAD_MORE;
+    }
+
+    private boolean showAddActivity() {
+        boolean cancel = false;
+
+        City city = Session.getCity(this);
+        AreaCategory areaCategory = Session.getAreaCategory(this);
+        AreaName areaName = Session.getAreaName(this);
+
+        if (city == null || areaCategory == null || areaName == null) {
+            cancel = true;
+        }
+
+        if (cancel) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.prompt_perhatian)
+                    .content(R.string.prompt_pengaturan_prekondisi)
+                    .positiveColorRes(R.color.colorPrimary)
+                    .positiveText(R.string.prompt_setuju)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        }
+                    })
+                    .show();
+        } else {
+            Intent iAddActivity = new Intent(this, AddActivityNext.class);
+            iAddActivity.putExtra(IntentParam.CITY, city);
+            iAddActivity.putExtra(IntentParam.AREA_CATEGORY, areaCategory);
+            iAddActivity.putExtra(IntentParam.AREA_NAME, areaName);
+            startActivityForResult(iAddActivity, ADD_RESPONSE);
+        }
+        return true;
+    }
+
+    private boolean showUploadActivity() {
+        if (mJobManager.count() > 0) {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.prompt_pemberitahuan)
+                    .content(R.string.prompt_upload_in_progress)
+                    .positiveColorRes(R.color.colorPrimary)
+                    .positiveText(R.string.prompt_ok)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        }
+                    })
+                    .show();
+        } else {
+            Intent uploadActivity = new Intent(this, UploadActivityNext.class);
+            startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
+        } return true;
+    }
+
+    private boolean showChangeIPDialog() {
+        String curIP = Session.getIpAddress(this);
+        new MaterialDialog.Builder(this)
+                .title(R.string.prompt_ip_address)
+                .content(null)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(getString(R.string.prompt_ip_address), curIP, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        Session.saveIpAddress(getApplicationContext(), input.toString());
+
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
+                })
+                .positiveColorRes(R.color.colorPrimary)
+                .negativeColorRes(R.color.colorAccent)
+                .negativeText(R.string.prompt_batal)
+                .show();
+        return true;
     }
 }
