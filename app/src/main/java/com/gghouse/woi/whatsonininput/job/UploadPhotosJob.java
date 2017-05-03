@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by michaelhalim on 5/2/17.
@@ -50,7 +48,22 @@ public class UploadPhotosJob extends Job {
         }
 
         if (!bitmapBase64.isEmpty()) {
-            ws_uploadPhoto(updatedStoreFileLocation);
+            List<StoreFileLocation> storeFileLocationList = new ArrayList<StoreFileLocation>();
+            storeFileLocationList.add(updatedStoreFileLocation);
+
+            Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
+            StoreUploadPhotosResponse storeUploadPhotosResponse = callUploadPhotos.execute().body();
+            switch (storeUploadPhotosResponse.getCode()) {
+                case Config.CODE_200:
+                    Session.removeLocalPhoto(WOIInputApplication.getAppContext(), mStoreFileLocation);
+                    if (WOIInputApplication.getInstance().getJobManager().count() == 0) {
+                        Logger.log("This is the last.");
+                    }
+                    break;
+                default:
+                    Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
+                    break;
+            }
         }
     }
 
@@ -62,31 +75,5 @@ public class UploadPhotosJob extends Job {
     @Override
     protected boolean shouldReRunOnThrowable(Throwable throwable) {
         return false;
-    }
-
-    private void ws_uploadPhoto(final StoreFileLocation storeFileLocation) {
-        List<StoreFileLocation> storeFileLocationList = new ArrayList<StoreFileLocation>();
-        storeFileLocationList.add(storeFileLocation);
-
-        Call<StoreUploadPhotosResponse> callUploadPhotos = ApiClient.getClient().uploadPhotos(storeFileLocationList);
-        callUploadPhotos.enqueue(new Callback<StoreUploadPhotosResponse>() {
-            @Override
-            public void onResponse(Call<StoreUploadPhotosResponse> call, Response<StoreUploadPhotosResponse> response) {
-                StoreUploadPhotosResponse storeUploadPhotosResponse = response.body();
-                switch (storeUploadPhotosResponse.getCode()) {
-                    case Config.CODE_200:
-                        Session.removeLocalPhoto(WOIInputApplication.getAppContext(), mStoreFileLocation);
-                        break;
-                    default:
-                        Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(Call<StoreUploadPhotosResponse> call, Throwable t) {
-                Logger.log(Config.ON_FAILURE + ": " + t.getMessage());
-            }
-        });
     }
 }
