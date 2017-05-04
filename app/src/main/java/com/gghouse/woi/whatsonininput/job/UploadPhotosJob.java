@@ -1,9 +1,11 @@
 package com.gghouse.woi.whatsonininput.job;
 
+import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.ImageHelper;
+import com.gghouse.woi.whatsonininput.util.LocalNotificationHelper;
 import com.gghouse.woi.whatsonininput.util.Logger;
 import com.gghouse.woi.whatsonininput.util.Session;
 import com.gghouse.woi.whatsonininput.webservices.ApiClient;
@@ -49,6 +51,9 @@ public class UploadPhotosJob extends Job {
                     Session.removeLocalPhoto(WOIInputApplication.getInstance().getAppContext(), mStoreFileLocation);
                     if (WOIInputApplication.getInstance().getJobManager().count() == 0) {
                         Session.setUploading(false);
+                        LocalNotificationHelper.postNotification(
+                                WOIInputApplication.getInstance().getAppContext().getString(R.string.app_name),
+                                "Upload photos has completed.");
                     }
                     break;
                 default:

@@ -20,4 +20,9 @@ public interface Config {
     String ON_FAILURE = "onFailure";
 
     int SIZE_PER_PAGE = 10;
+
+    /*
+     * Notification IDs
+     */
+    int NT_UPLOAD_ID = 1;
 }

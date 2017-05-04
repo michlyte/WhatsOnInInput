@@ -1,6 +1,7 @@
 package com.gghouse.woi.whatsonininput;
 
 import android.app.Application;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.util.Log;
 
@@ -15,8 +16,11 @@ import com.path.android.jobqueue.log.CustomLogger;
 
 public class WOIInputApplication extends Application {
     private static WOIInputApplication instance;
+
     private static Context context;
     private static Prefser prefser;
+    private static NotificationManager mNotificationManager;
+
     private JobManager jobManager;
 
     public WOIInputApplication() {
@@ -28,6 +32,7 @@ public class WOIInputApplication extends Application {
         super.onCreate();
         WOIInputApplication.context = getApplicationContext();
         prefser = new Prefser(getApplicationContext());
+        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         configureJobManager();
     }
 
@@ -78,5 +83,9 @@ public class WOIInputApplication extends Application {
 
     public Prefser getPrefser() {
         return prefser;
+    }
+
+    public NotificationManager getNotificationManager() {
+        return mNotificationManager;
     }
 }

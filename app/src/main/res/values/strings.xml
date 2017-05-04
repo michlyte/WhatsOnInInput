@@ -35,13 +35,13 @@
     <string name="prompt_ok">OK</string>
     <string name="prompt_type">Type</string>
 
-    <string name="action_next">Next</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_next">Lanjut</string>
+    <string name="action_settings">Pengaturan</string>
     <string name="action_upload">Upload</string>
-    <string name="action_add">Add</string>
-    <string name="action_send">Send</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_change_ip">Change IP</string>
+    <string name="action_add">Tambah</string>
+    <string name="action_send">Kirim</string>
+    <string name="action_edit">Ubah</string>
+    <string name="action_change_ip">Ubah IP</string>
 
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>

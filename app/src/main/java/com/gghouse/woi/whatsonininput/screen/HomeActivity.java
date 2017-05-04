@@ -364,7 +364,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     private boolean showUploadActivity() {
         if (Session.isUploading()) {
             new MaterialDialog.Builder(this)
-                    .title(R.string.prompt_pemberitahuan)
+                    .title(R.string.prompt_perhatian)
                     .content(R.string.prompt_upload_in_progress)
                     .positiveColorRes(R.color.colorPrimary)
                     .positiveText(R.string.prompt_ok)
