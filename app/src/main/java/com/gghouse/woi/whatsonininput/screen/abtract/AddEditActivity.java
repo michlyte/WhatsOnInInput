@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -14,8 +15,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.common.Type;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
 import com.gghouse.woi.whatsonininput.util.Logger;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.mindorks.paracamera.Camera;
 import com.squareup.picasso.Picasso;
 
@@ -67,6 +70,13 @@ public abstract class AddEditActivity extends AppCompatActivity {
     protected EditText mETFloor;
     protected EditText mETBlockNumber;
     protected EditText mETTags;
+
+    /*
+     * TextInputLayouts
+     */
+    private TextInputLayout mTilDistrcit;
+    private TextInputLayout mTilFloor;
+    private TextInputLayout mTilBlockNumber;
 
     private String tempFilename;
 
@@ -161,6 +171,24 @@ public abstract class AddEditActivity extends AppCompatActivity {
         mETFloor = (EditText) findViewById(R.id.et_AA_floor);
         mETBlockNumber = (EditText) findViewById(R.id.et_AA_blockNumber);
         mETTags = (EditText) findViewById(R.id.et_AA_tags);
+
+        mTilDistrcit = (TextInputLayout) findViewById(R.id.til_district);
+        mTilFloor = (TextInputLayout) findViewById(R.id.til_floor);
+        mTilBlockNumber = (TextInputLayout) findViewById(R.id.til_blockNumber);
+
+        int typeId = Session.getTypeId();
+        Type type = Type.getById(typeId);
+        if (type != null) {
+            switch (type) {
+                case INDOOR:
+                    mTilDistrcit.setVisibility(View.GONE);
+                    break;
+                case OUTDOOR:
+                    mTilFloor.setVisibility(View.GONE);
+                    mTilBlockNumber.setVisibility(View.GONE);
+                    break;
+            }
+        }
     }
 
     @Override

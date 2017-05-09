@@ -27,7 +27,7 @@ import java.util.List;
  * Created by michael on 3/29/2017.
  */
 
-public class UploadActivityNext extends AppCompatActivity {
+public class UploadActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private UploadAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;

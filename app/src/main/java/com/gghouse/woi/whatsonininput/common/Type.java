@@ -5,8 +5,8 @@ package com.gghouse.woi.whatsonininput.common;
  */
 
 public enum Type {
-    INDOOR (0, "Indoor"),
-    OUTDOOR (1, "Outdoor");
+    INDOOR(0, "Indoor"),
+    OUTDOOR(1, "Outdoor");
 
     private Integer id;
     private String desc;
@@ -33,9 +33,18 @@ public enum Type {
     }
 
     public static Integer getTypeIdByDesc(String desc) {
-        for (Type type: Type.values()) {
+        for (Type type : Type.values()) {
             if (type.desc.equals(desc)) {
                 return type.id;
+            }
+        }
+        return null;
+    }
+
+    public static Type getById(int id) {
+        for (Type type : Type.values()) {
+            if (type.id.equals(id)) {
+                return type;
             }
         }
         return null;

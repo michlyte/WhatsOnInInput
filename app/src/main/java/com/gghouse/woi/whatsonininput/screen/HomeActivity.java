@@ -21,6 +21,7 @@ import com.gghouse.woi.whatsonininput.WOIInputApplication;
 import com.gghouse.woi.whatsonininput.adapter.HomeAdapter;
 import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.common.IntentParam;
+import com.gghouse.woi.whatsonininput.common.SessionParam;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.listener.OnLoadMoreListener;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
@@ -50,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     static final int ADD_RESPONSE = 99;
     static final int EDIT_RESPONSE = 98;
     static final int UPLOAD_RESPONSE = 97;
+    static final int SETTINGS_RESPONSE = 96;
     static final String sort = "storeId,desc";
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -155,8 +157,8 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
             case R.id.action_change_ip:
                 return showChangeIPDialog();
             case R.id.action_settings:
-                Intent settingsActivity = new Intent(this, SettingsActivityNext.class);
-                startActivity(settingsActivity);
+                Intent settingsActivity = new Intent(this, SettingsActivity.class);
+                startActivityForResult(settingsActivity, SETTINGS_RESPONSE);
                 return true;
         }
 
@@ -237,16 +239,24 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                         break;
                 }
                 break;
+            case SETTINGS_RESPONSE:
+                ws_getStores(HomeMode.REFRESH);
+                break;
             default:
                 break;
         }
     }
 
     private void ws_getStores(HomeMode homeMode) {
+        Long areaId = Session.getAreaNameId();
+        if (areaId == SessionParam.INIT_VALUE_AREA_NAME_ID) {
+            areaId = null;
+        }
+
         switch (homeMode) {
             case REFRESH:
                 mDynamicBox.showLoadingLayout();
-                Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE, sort);
+                Call<StoreListResponse> callGetStores = ApiClient.getClient().getStores(0, Config.SIZE_PER_PAGE, sort, areaId);
                 callGetStores.enqueue(new Callback<StoreListResponse>() {
                     @Override
                     public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
@@ -273,7 +283,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                 });
                 break;
             case LOAD_MORE:
-                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE, sort);
+                Call<StoreListResponse> callStoreListLoadMore = ApiClient.getClient().getStores(++mPage, Config.SIZE_PER_PAGE, sort, areaId);
                 callStoreListLoadMore.enqueue(new Callback<StoreListResponse>() {
                     @Override
                     public void onResponse(Call<StoreListResponse> call, Response<StoreListResponse> response) {
@@ -375,7 +385,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     })
                     .show();
         } else {
-            Intent uploadActivity = new Intent(this, UploadActivityNext.class);
+            Intent uploadActivity = new Intent(this, UploadActivity.class);
             startActivityForResult(uploadActivity, UPLOAD_RESPONSE);
         }
         return true;
@@ -391,6 +401,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
                     @Override
                     public void onInput(MaterialDialog dialog, CharSequence input) {
                         Session.saveIpAddress(getApplicationContext(), input.toString());
+
+                        Session.clearCities();
+                        Session.clearAreaCategories();
+//                        ws_getCities();
+//                        ws_getAreaCategories();
 
                         mSwipeRefreshLayout.setRefreshing(false);
                     }

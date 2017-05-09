@@ -111,6 +111,12 @@ public abstract class Session {
         }
     }
 
+    public static void clearCities() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+
+        prefser.remove(SP_CITIES);
+    }
+
     @Nullable
     public static AreaCategory getAreaCategory(Context context) {
         Prefser prefser = new Prefser(context);
@@ -154,6 +160,12 @@ public abstract class Session {
         prefser.put(SP_AREA_CATEGORIES, areaCategories);
     }
 
+    public static void clearAreaCategories() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+
+        prefser.remove(SP_AREA_CATEGORIES);
+    }
+
     public static void saveTypeId(Context context, Integer typeId) {
         Prefser prefser = new Prefser(context);
 
@@ -164,8 +176,8 @@ public abstract class Session {
         }
     }
 
-    public static Integer getTypeId(Context context) {
-        Prefser prefser = new Prefser(context);
+    public static Integer getTypeId() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
 
         if (prefser.contains(SP_TYPE)) {
             return prefser.get(SP_TYPE, Integer.class, SessionParam.INIT_VALUE_TYPE);
@@ -216,8 +228,8 @@ public abstract class Session {
         }
     }
 
-    public static Long getAreaNameId(Context context) {
-        Prefser prefser = new Prefser(context);
+    public static Long getAreaNameId() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
 
         if (prefser.contains(SP_AREA_NAME_ID)) {
             return prefser.get(SP_AREA_NAME_ID, Long.class, SessionParam.INIT_VALUE_AREA_NAME_ID);
