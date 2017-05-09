@@ -99,15 +99,15 @@ public class SettingsActivity extends AppCompatActivity {
                     mAreaCategoryId = areaCategory.getCategoryId();
                     Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
 
-                    AreaName[] areaNames = Session.getAreaNames(getApplicationContext(), mAreaCategoryId);
-                    if (areaNames != null) {
-                        mListAreaName.clear();
-                        mListAreaName.addAll(Arrays.asList(areaNames));
-                        mAdapterAreaName.notifyDataSetChanged();
-                        setSpinnerSelection(Settings.AREA_NAME);
-                    } else {
+//                    AreaName[] areaNames = Session.getAreaNames(getApplicationContext(), mAreaCategoryId);
+//                    if (areaNames != null) {
+//                        mListAreaName.clear();
+//                        mListAreaName.addAll(Arrays.asList(areaNames));
+//                        mAdapterAreaName.notifyDataSetChanged();
+//                        setSpinnerSelection(Settings.AREA_NAME);
+//                    } else {
                         ws_getAreaNames(areaCategory.getCategoryId());
-                    }
+//                    }
                 }
             }
 
