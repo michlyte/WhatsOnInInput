@@ -11,7 +11,6 @@ import android.widget.Spinner;
 
 import com.gghouse.woi.whatsonininput.R;
 import com.gghouse.woi.whatsonininput.common.Config;
-import com.gghouse.woi.whatsonininput.common.Type;
 import com.gghouse.woi.whatsonininput.model.AreaCategory;
 import com.gghouse.woi.whatsonininput.model.AreaName;
 import com.gghouse.woi.whatsonininput.model.City;
@@ -31,10 +30,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class SettingsActivity extends AppCompatActivity {
-    private Spinner mSType;
-    private ArrayAdapter<Type> mAdapterType;
-    private List<Type> mListType;
-    private Integer mTypeId;
 
     private Spinner mSCity;
     private ArrayAdapter<City> mAdapterCity;
@@ -99,15 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
                     mAreaCategoryId = areaCategory.getCategoryId();
                     Session.saveAreaCategoryId(getApplicationContext(), mAreaCategoryId);
 
-//                    AreaName[] areaNames = Session.getAreaNames(getApplicationContext(), mAreaCategoryId);
-//                    if (areaNames != null) {
-//                        mListAreaName.clear();
-//                        mListAreaName.addAll(Arrays.asList(areaNames));
-//                        mAdapterAreaName.notifyDataSetChanged();
-//                        setSpinnerSelection(Settings.AREA_NAME);
-//                    } else {
-                        ws_getAreaNames(areaCategory.getCategoryId());
-//                    }
+                    ws_getAreaNames(areaCategory.getCategoryId());
                 }
             }
 
@@ -140,22 +127,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        mListType = new ArrayList<Type>();
-        mSType = (Spinner) findViewById(R.id.s_type);
-        mAdapterType = new ArrayAdapter<Type>(this, android.R.layout.simple_spinner_dropdown_item, mListType);
-        mSType.setAdapter(mAdapterType);
-        mSType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Session.saveTypeId(getApplicationContext(), mListType.get(position).getId());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         /*
          * Populate data
          */
@@ -176,10 +147,6 @@ public class SettingsActivity extends AppCompatActivity {
             mAdapterAreaCategory.notifyDataSetChanged();
             setSpinnerSelection(Settings.AREA_CATEGORY);
         }
-
-        mListType.addAll(Arrays.asList(Type.values()));
-        mAdapterType.notifyDataSetChanged();
-        setSpinnerSelection(Settings.TYPE);
 
         /*
          * Debug
@@ -228,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
             case AREA_NAME:
                 Logger.log("AreaNames: " + mListAreaName.toString());
-                Logger.log("GetAreaName: " + Session.getAreaName(this));
+                Logger.log("GetAreaName: " + Session.getAreaName());
                 mAreaNameId = Session.getAreaNameId();
                 int initAreaNamePosition = 0;
                 for (int i = 0; i < mListAreaName.size(); i++) {
@@ -238,19 +205,6 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 }
                 mSAreaName.setSelection(initAreaNamePosition);
-                break;
-            case TYPE:
-                Logger.log("Type: " + mListCity.toString());
-                Logger.log("GetTypeId: " + Session.getTypeId());
-                mTypeId = Session.getTypeId();
-                int initTypePosition = 0;
-                for (int i = 0; i < mListType.size(); i++) {
-                    if (mListType.get(i).getId() == mTypeId) {
-                        initTypePosition = i;
-                        break;
-                    }
-                }
-                mSType.setSelection(initTypePosition);
                 break;
         }
     }
@@ -285,8 +239,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void ws_getAreaCategories() {
-        Call<AreaCategoryListResponse> callGetAareCategories = ApiClient.getClient().getAreaCategories();
-        callGetAareCategories.enqueue(new Callback<AreaCategoryListResponse>() {
+        Call<AreaCategoryListResponse> callGetAreaCategories = ApiClient.getClient().getAreaCategories();
+        callGetAreaCategories.enqueue(new Callback<AreaCategoryListResponse>() {
             @Override
             public void onResponse(Call<AreaCategoryListResponse> call, Response<AreaCategoryListResponse> response) {
                 AreaCategoryListResponse areaCategoryListResponse = response.body();
@@ -321,7 +275,7 @@ public class SettingsActivity extends AppCompatActivity {
                 AreaNameListResponse areaNameListResponse = response.body();
                 switch (areaNameListResponse.getCode()) {
                     case Config.CODE_200:
-                        Session.saveAreaNames(getApplicationContext(), categoryId, areaNameListResponse.getData());
+                        Session.saveAreaNames(areaNameListResponse.getData());
 
                         mListAreaName.clear();
                         mListAreaName.addAll(Arrays.asList(areaNameListResponse.getData()));
@@ -345,6 +299,5 @@ public class SettingsActivity extends AppCompatActivity {
         CITY,
         AREA_CATEGORY,
         AREA_NAME,
-        TYPE;
     }
 }

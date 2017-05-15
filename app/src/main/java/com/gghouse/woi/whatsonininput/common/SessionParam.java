@@ -21,9 +21,6 @@ public interface SessionParam {
 
     String SP_LOCAL_PHOTOS = "SP_LOCAL_PHOTOS";
 
-    String SP_TYPE = "SP_TYPE";
-    int INIT_VALUE_TYPE = 0;
-
     String SP_UPLOADING = "SP_UPLOADING";
     boolean INIT_VALUE_UPLOADING = false;
 }

@@ -342,7 +342,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
         City city = Session.getCity(this);
         AreaCategory areaCategory = Session.getAreaCategory(this);
-        AreaName areaName = Session.getAreaName(this);
+        AreaName areaName = Session.getAreaName();
 
         if (city == null || areaCategory == null || areaName == null) {
             cancel = true;

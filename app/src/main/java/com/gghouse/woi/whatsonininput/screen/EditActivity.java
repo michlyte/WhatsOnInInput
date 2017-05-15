@@ -51,6 +51,14 @@ public class EditActivity extends AddEditActivity {
             mHmInitPhoto = new HashMap<Integer, StoreFileLocation>();
 
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
+
+            if (mStore.getCategory().getIndoor() != null && mStore.getCategory().getIndoor()) {
+                mTilFloor.setVisibility(View.GONE);
+                mTilBlockNumber.setVisibility(View.GONE);
+            } else {
+                mTilDistrcit.setVisibility(View.GONE);
+            }
+
             tempPhotoName = mStore.getStoreId() + "";
             /*
              * Local photos

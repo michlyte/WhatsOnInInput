@@ -25,7 +25,6 @@ import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_AREA_NAME_ID
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITIES;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_CITY_ID;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_LOCAL_PHOTOS;
-import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_TYPE;
 import static com.gghouse.woi.whatsonininput.common.SessionParam.SP_UPLOADING;
 
 /**
@@ -166,26 +165,6 @@ public abstract class Session {
         prefser.remove(SP_AREA_CATEGORIES);
     }
 
-    public static void saveTypeId(Context context, Integer typeId) {
-        Prefser prefser = new Prefser(context);
-
-        if (typeId != null) {
-            prefser.put(SP_TYPE, typeId);
-        } else {
-            Logger.log("saveType is null.");
-        }
-    }
-
-    public static Integer getTypeId() {
-        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
-
-        if (prefser.contains(SP_TYPE)) {
-            return prefser.get(SP_TYPE, Integer.class, SessionParam.INIT_VALUE_TYPE);
-        } else {
-            return SessionParam.INIT_VALUE_TYPE;
-        }
-    }
-
     @Nullable
     public static AreaCategory[] getAreaCategories(Context context) {
         Prefser prefser = new Prefser(context);
@@ -199,19 +178,16 @@ public abstract class Session {
     }
 
     @Nullable
-    public static AreaName getAreaName(Context context) {
-        Prefser prefser = new Prefser(context);
+    public static AreaName getAreaName() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
 
         if (prefser.contains(SP_AREA_NAME_ID)) {
-            Long areaCategoryId = prefser.get(SP_AREA_CATEGORY_ID, Long.class, -1L);
-            if (areaCategoryId != -1L && prefser.contains(SP_AREA_NAME + areaCategoryId)) {
-                Long areaNameId = prefser.get(SP_AREA_NAME_ID, Long.class, 1L);
-                AreaName[] areaNames = prefser.get(SP_AREA_NAME + areaCategoryId, AreaName[].class, new AreaName[]{});
+            Long areaNameId = prefser.get(SP_AREA_NAME_ID, Long.class, 1L);
+            AreaName[] areaNames = prefser.get(SP_AREA_NAME, AreaName[].class, new AreaName[]{});
 
-                for (AreaName areaName : areaNames) {
-                    if (areaName.getAreaId() == areaNameId) {
-                        return areaName;
-                    }
+            for (AreaName areaName : areaNames) {
+                if (areaName.getAreaId() == areaNameId) {
+                    return areaName;
                 }
             }
         }
@@ -238,42 +214,26 @@ public abstract class Session {
         }
     }
 
-    public static void saveAreaNames(Context context, long areaCategoryId, AreaName[] areaNames) {
-        Prefser prefser = new Prefser(context);
-
-        String SP_AREA_NAME_CATEGORY_ID = SP_AREA_NAME + areaCategoryId;
-
-        prefser.put(SP_AREA_NAME_CATEGORY_ID, areaNames);
+    public static void saveAreaNames(AreaName[] areaNames) {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+        prefser.put(SP_AREA_NAME, areaNames);
     }
 
     @Nullable
-    public static AreaName[] getAreaNames(Context context, long areaCategoryId) {
-        Prefser prefser = new Prefser(context);
+    public static AreaName[] getAreaNames() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
 
-        String SP_AREA_NAME_CATEGORY_ID = SP_AREA_NAME + areaCategoryId;
-
-        if (prefser.contains(SP_AREA_NAME_CATEGORY_ID)) {
-            return prefser.get(SP_AREA_NAME_CATEGORY_ID, AreaName[].class, new AreaName[]{});
+        if (prefser.contains(SP_AREA_NAME)) {
+            return prefser.get(SP_AREA_NAME, AreaName[].class, new AreaName[]{});
         } else {
-            Logger.log("[getAreaNames]", "Prefser does not contain " + SP_AREA_NAME_CATEGORY_ID);
+            Logger.log("[getAreaNames]", "Prefser does not contain " + SP_AREA_NAME);
             return null;
         }
     }
 
-    public static void clearAreaNames(Context context) {
-        Prefser prefser = new Prefser(context);
-
-        if (prefser.contains(SP_AREA_CATEGORIES)) {
-            AreaCategory[] areaCategories = prefser.get(SP_AREA_CATEGORIES, AreaCategory[].class, new AreaCategory[]{});
-
-            for (AreaCategory areaCategory : areaCategories) {
-                String SP_AREA_NAME_CATEGORY_ID = SP_AREA_NAME + areaCategory.getCategoryId();
-                if (prefser.contains(SP_AREA_NAME_CATEGORY_ID)) {
-                    prefser.remove(SP_AREA_NAME_CATEGORY_ID);
-                    Logger.log("Key [" + SP_AREA_NAME_CATEGORY_ID + "] is removed.");
-                }
-            }
-        }
+    public static void clearAreaNames() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
+        prefser.remove(SP_AREA_NAME);
     }
 
     /*

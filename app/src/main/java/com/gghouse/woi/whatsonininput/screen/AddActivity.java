@@ -55,6 +55,13 @@ public class AddActivity extends AddEditActivity {
             if (mAreaCategory != null) {
                 mBAreaCategory.setText(mAreaCategory.getCategoryName());
                 mBAreaCategory.setVisibility(View.VISIBLE);
+
+                if (mAreaCategory.getIndoor() != null && mAreaCategory.getIndoor()) {
+                    mTilFloor.setVisibility(View.GONE);
+                    mTilBlockNumber.setVisibility(View.GONE);
+                } else {
+                    mTilDistrcit.setVisibility(View.GONE);
+                }
             }
 
             if (mAreaName != null) {

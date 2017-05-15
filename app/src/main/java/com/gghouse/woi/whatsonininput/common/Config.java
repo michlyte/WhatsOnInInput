@@ -9,6 +9,7 @@ public interface Config {
     boolean LOG_ENABLE = true;
 
     String BASE_URL = "http://10.0.2.2:8093";
+//    String BASE_URL = "182.253.169.45:8093";
     int CONNECT_TIMEOUT = 60;
     int READ_TIMEOUT = 60;
 

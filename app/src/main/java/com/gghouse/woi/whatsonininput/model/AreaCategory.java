@@ -10,6 +10,7 @@ public class AreaCategory implements Serializable {
     private Long categoryId;
     private String categoryName;
     private Integer type;
+    private Boolean indoor;
 
     public Long getCategoryId() {
         return categoryId;
@@ -21,6 +22,10 @@ public class AreaCategory implements Serializable {
 
     public Integer getType() {
         return type;
+    }
+
+    public Boolean getIndoor() {
+        return indoor;
     }
 
     @Override
