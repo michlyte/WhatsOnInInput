@@ -52,11 +52,28 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @Override
     public void onBindViewHolder(PhotoViewHolder holder, int position) {
         holder.mItem = mDataset.get(position);
-        Picasso.with(mContext)
-                .load(new File(holder.mItem.getLocation()))
-                .fit()
-                .centerCrop()
-                .into(holder.mImageView);
+        if (holder.mItem.isLocal()) {
+            Picasso.with(mContext)
+                    .load(new File(holder.mItem.getLocation()))
+                    .fit()
+                    .centerCrop()
+                    .into(holder.mImageView);
+        } else {
+            String url = holder.mItem.getUrl();
+            if (url == null || url.isEmpty()) {
+                Picasso.with(mContext)
+                        .load(R.drawable.no_image)
+                        .fit()
+                        .centerCrop()
+                        .into(holder.mImageView);
+            } else {
+                Picasso.with(mContext)
+                        .load(url)
+                        .fit()
+                        .centerCrop()
+                        .into(holder.mImageView);
+            }
+        }
 //        Picasso.with(mContext)
 //                .load(R.mipmap.ic_launcher)
 //                .fit()

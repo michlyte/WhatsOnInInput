@@ -57,10 +57,10 @@ public class AddActivity extends AddEditActivity {
                 mBAreaCategory.setVisibility(View.VISIBLE);
 
                 if (mAreaCategory.getIndoor() != null && mAreaCategory.getIndoor()) {
+                    mTilDistrcit.setVisibility(View.GONE);
+                } else {
                     mTilFloor.setVisibility(View.GONE);
                     mTilBlockNumber.setVisibility(View.GONE);
-                } else {
-                    mTilDistrcit.setVisibility(View.GONE);
                 }
             }
 

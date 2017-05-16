@@ -53,10 +53,10 @@ public class EditActivity extends AddEditActivity {
             mStore = (Store) intent.getSerializableExtra(IntentParam.STORE);
 
             if (mStore.getCategory().getIndoor() != null && mStore.getCategory().getIndoor()) {
+                mTilDistrcit.setVisibility(View.GONE);
+            } else {
                 mTilFloor.setVisibility(View.GONE);
                 mTilBlockNumber.setVisibility(View.GONE);
-            } else {
-                mTilDistrcit.setVisibility(View.GONE);
             }
 
             tempPhotoName = mStore.getStoreId() + "";
