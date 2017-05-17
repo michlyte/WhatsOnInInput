@@ -15,6 +15,7 @@ import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.listener.HomeOnClickListener;
 import com.gghouse.woi.whatsonininput.listener.OnLoadMoreListener;
 import com.gghouse.woi.whatsonininput.model.Store;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -128,6 +129,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                                 .centerInside()
                                 .into(homeViewHolder.ivImage);
                     } else {
+                        url = url.replace(Config.urlParam, Session.getIpAddress());
                         Picasso.with(mContext)
                                 .load(url)
                                 .fit()

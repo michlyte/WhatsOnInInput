@@ -94,8 +94,10 @@ public class UploadActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_send:
-                Session.setUploading(true);
-                for (StoreFileLocation storeFileLocation: mDataSet) {
+                if (mDataSet.size() > 0) {
+                    Session.setUploading(true);
+                }
+                for (StoreFileLocation storeFileLocation : mDataSet) {
                     mJobManager.addJobInBackground(new UploadPhotosJob(storeFileLocation));
                 }
                 setResult(Activity.RESULT_OK);

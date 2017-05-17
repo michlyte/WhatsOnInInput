@@ -43,8 +43,8 @@ public abstract class Session {
         apiClient.generateClientWithNewIP(newIPAddress);
     }
 
-    public static String getIpAddress(Context context) {
-        Prefser prefser = new Prefser(context);
+    public static String getIpAddress() {
+        Prefser prefser = WOIInputApplication.getInstance().getPrefser();
 
         if (prefser.contains(SessionParam.IP_ADDRESS)) {
             return prefser.get(SessionParam.IP_ADDRESS, String.class, Config.BASE_URL);

@@ -90,7 +90,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         /*
          * Session Manager to update ip address.
          */
-        ApiClient.generateClientWithNewIP(getIpAddress(this));
+        ApiClient.generateClientWithNewIP(getIpAddress());
 
         mDataSet = new ArrayList<Store>();
 
@@ -170,6 +170,7 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
         final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.prompt_retrieving)
                 .content(R.string.prompt_please_wait)
+                .cancelable(false)
                 .progress(true, 0)
                 .progressIndeterminateStyle(true)
                 .show();
@@ -392,10 +393,11 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
     }
 
     private boolean showChangeIPDialog() {
-        String curIP = Session.getIpAddress(this);
+        String curIP = Session.getIpAddress();
         new MaterialDialog.Builder(this)
                 .title(R.string.prompt_ip_address)
                 .content(null)
+                .cancelable(false)
                 .inputType(InputType.TYPE_CLASS_TEXT)
                 .input(getString(R.string.prompt_ip_address), curIP, new MaterialDialog.InputCallback() {
                     @Override
@@ -404,8 +406,6 @@ public class HomeActivity extends AppCompatActivity implements HomeOnClickListen
 
                         Session.clearCities();
                         Session.clearAreaCategories();
-//                        ws_getCities();
-//                        ws_getAreaCategories();
 
                         mSwipeRefreshLayout.setRefreshing(false);
                     }

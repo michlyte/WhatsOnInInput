@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.gghouse.woi.whatsonininput.R;
+import com.gghouse.woi.whatsonininput.common.Config;
 import com.gghouse.woi.whatsonininput.model.StoreFileLocation;
+import com.gghouse.woi.whatsonininput.util.Session;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -67,6 +69,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                         .centerCrop()
                         .into(holder.mImageView);
             } else {
+                url = url.replace(Config.urlParam, Session.getIpAddress());
                 Picasso.with(mContext)
                         .load(url)
                         .fit()

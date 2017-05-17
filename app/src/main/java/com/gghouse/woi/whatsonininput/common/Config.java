@@ -26,4 +26,6 @@ public interface Config {
      * Notification IDs
      */
     int NT_UPLOAD_ID = 1;
+
+    String urlParam = "${ip}";
 }

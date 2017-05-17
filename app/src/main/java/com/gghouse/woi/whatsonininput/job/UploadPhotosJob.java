@@ -58,6 +58,9 @@ public class UploadPhotosJob extends Job {
                     break;
                 default:
                     Logger.log("Status" + "[" + storeUploadPhotosResponse.getCode() + "]: " + storeUploadPhotosResponse.getStatus());
+                    if (WOIInputApplication.getInstance().getJobManager().count() == 0) {
+                        Session.setUploading(false);
+                    }
                     break;
             }
         }

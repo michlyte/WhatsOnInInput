@@ -103,6 +103,7 @@ public class AddActivity extends AddEditActivity {
         final MaterialDialog materialDialog = new MaterialDialog.Builder(this)
                 .title(R.string.prompt_sending)
                 .content(R.string.prompt_please_wait)
+                .cancelable(false)
                 .progress(true, 0)
                 .progressIndeterminateStyle(true)
                 .show();
